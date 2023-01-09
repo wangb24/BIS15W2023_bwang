@@ -1,5 +1,15 @@
-> This repo is for storing codes written for BIS 15L class at UC Davis during winter quarter 2023. 
+# BIS 15L Classwork
 
-> All codes in this repo licensed under Apache 2.0 License. 
+This repo is for storing codes written for BIS 15L course in winter quarter 2023.
+
+<!-- ## Class Info
+ -->
 
 
+## Contact Me
+
+[email](mailto:dev@h.wb233.moe)
+
+## License
+
+[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
