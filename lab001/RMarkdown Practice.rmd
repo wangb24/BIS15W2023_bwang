@@ -1,0 +1,26 @@
+---
+title: "R Notebook"
+output:
+    html_document:
+        theme: spacelab
+        toc: yes
+
+---
+
+## Practice
+1. Test out the arithmetic capabilities of R; experiment by doing addition, subtraction, multiplication, and division.
+2. Go back to your "RMarkdown Practice" file and experiment with titles, text, and syntax.
+3. Copy and paste the following two pieces of code into the document (include the gray code "chunks").
+
+```{r}
+#install.packages("tidyverse")
+library("tidyverse")
+```
+
+```{r}
+ggplot(mtcars, aes(x = factor(cyl))) +
+  geom_bar()
+```
+
+4. Now `knit` the file to html using the knit button at the top of the page.
+5. Lastly, commit and push this file to your GitHub repository.
