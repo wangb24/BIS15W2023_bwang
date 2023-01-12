@@ -2,6 +2,8 @@
 
 > I will be placing knitted Rmarkdowns in [this folder](https://bis15.wb233.moe).
 
+> Link to the [Github Repo](https://github.com/wangb24/BIS15W2023_bwang) <sub>Login Needed</sub>
+
 ### Lab 1
 
 - [Class: RMarkdown Practice](01/RMarkdown-Practice.html)
