@@ -27,32 +27,35 @@
 
     plant_data <- cbind(height, mass)
     colnames(plant_data) <- c("height", "mass")
+    rownames(plant_data) <- c("Plant 1", "Plant 2", "Plant 3", "Plant 4", "Plant 5" )
     plant_data
 
-    ##      height mass
-    ## [1,]   30.7  4.0
-    ## [2,]   37.6  5.2
-    ## [3,]   28.4  3.7
-    ## [4,]     NA   NA
-    ## [5,]   33.2  4.6
+    ##         height mass
+    ## Plant 1   30.7  4.0
+    ## Plant 2   37.6  5.2
+    ## Plant 3   28.4  3.7
+    ## Plant 4     NA   NA
+    ## Plant 5   33.2  4.6
 
 1.  Calculate the mean for height and mass and add them to the data
     matrix
 
 <!-- -->
 
-    mean_height <- mean(height, na.rm = TRUE)
-    mean_mass <- mean(mass, na.rm = TRUE)
-    mean_data <- c(mean_height, mean_mass)
+    mean_data <- colMeans(plant_data, na.rm = TRUE)
+    mean_data
+
+    ## height   mass 
+    ## 32.475  4.375
 
     plant_data <- rbind(plant_data, mean_data)
-    rownames(plant_data)[6] <- "mean"
+    rownames(plant_data)[6] <- "Mean"
     plant_data
 
-    ##      height  mass
-    ##      30.700 4.000
-    ##      37.600 5.200
-    ##      28.400 3.700
-    ##          NA    NA
-    ##      33.200 4.600
-    ## mean 32.475 4.375
+    ##         height  mass
+    ## Plant 1 30.700 4.000
+    ## Plant 2 37.600 5.200
+    ## Plant 3 28.400 3.700
+    ## Plant 4     NA    NA
+    ## Plant 5 33.200 4.600
+    ## Mean    32.475 4.375
