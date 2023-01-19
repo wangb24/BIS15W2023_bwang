@@ -4,10 +4,6 @@ date: "`r Sys.Date()`"
 output:
   html_document:
     theme: spacelab
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: yes
 ---
 
 ## Learning Goals
@@ -67,9 +63,11 @@ We are only interested in lakeid and scalelength.
 select(fish, "lakeid", "scalelength")
 ```
 
+<!-- ^ created a new dataframe with only variables of interest -->
+
 To add a range of columns use `start_col:end_col`.
 ```{r}
-fish
+names(fish)
 ```
 
 ```{r}
@@ -96,11 +94,11 @@ When columns are sequentially named, `starts_with()` makes selecting columns eas
 select(fish, starts_with("radii"))
 ```
 
-Options to select columns based on a specific criteria include:  
-1. ends_with() = Select columns that end with a character string  
-2. contains() = Select columns that contain a character string  
-3. matches() = Select columns that match a regular expression  
-4. one_of() = Select columns names that are from a group of names  
+> **Options to select columns based on a specific criteria include:**
+> **1. ends_with() = Select columns that end with a character string**
+> **2. contains() = Select columns that contain a character string**
+> **3. matches() = Select columns that match a regular expression**
+> **4. one_of() = Select columns names that are from a group of names**
 
 ```{r}
 names(fish)
@@ -128,7 +126,7 @@ glimpse(fish)
 select_if(fish, is.numeric)
 ```
 
-To select all columns that are *not* a class of data, you need to add a `~`.
+To select all columns that are *not* a class of data, you need to add a `~!`.
 ```{r}
 select_if(fish, ~!is.numeric(.))
 ```
@@ -142,42 +140,79 @@ mammals <- readr::read_csv("data/mammal_lifehistories_v2.csv")
 
 1. Use one or more of your favorite functions to assess the structure of the data.  
 ```{r}
+glimpse(mammals)
+```
 
+```{r}
+names(mammals)
 ```
 
 2. Are there any NAs? Are you sure? Try taking an average of `max. life` as a test.  
 ```{r}
-
+anyNA(mammals) %>% print
+print(mean(mammals$`max. life`))
 ```
+<!-- In this dataset, NA is shown with "-999" -->
+
+```{r}
+mammals[mammals == -999] <- NA
+```
+
+```{r}
+head(mammals) %>% print
+mean(mammals$`max. life`, na.rm=TRUE) %>% print
+```
+
+```{r}
+colSums(is.na(mammals))
+```
+
+
 
 3. What are the names of the columns in the `mammals` data?
 ```{r}
-
+names(mammals)
 ```
 
 4. Rename any columns that have capitol letters or punctuation issues.  
 ```{r}
-
+mammals <- rename(
+  mammals, 
+  genus = Genus,
+  afr = AFR,
+  max_life = `max. life`,
+  litter_size = `litter size`,
+  litters_per_year = `litters/year`,
+  wean_mass = `wean mass`,
+)
+names(mammals)
 ```
 
 5. We are only interested in the variables `genus`, `species`, and `mass`. Use `select()` to build a new dataframe `mass` focused on these variables.
 ```{r}
-
+mass <- select(mammals, genus, species, mass)
+head(mass, n=3)
 ```
 
 6. What if we only wanted to exclude `order` and `family`? Use the `-` operator to make the code efficient.
 ```{r}
-
+head(select(mammals, -order, -family), n=3)
 ```
 
 7. Select the columns that include "mass" as part of the name.  
 ```{r}
-
+head(
+  select(mammals, contains("mass")),
+  n=3
+)
 ```
 
 8. Select all of the columns that are of class `character`.  
 ```{r}
-
+head(
+  select_if(mammals, is.character),
+  n=3
+)
 ```
 
 ## Other
@@ -185,12 +220,12 @@ Here are two examples of code that are super helpful to have in your bag of tric
 
 Imported data frames often have a mix of lower and uppercase column names. Use `toupper()` or `tolower()` to fix this issue. I always try to use lowercase to keep things consistent.  
 ```{r}
-#mammals <- select_all(mammals, tolower)
+mammals <- select_all(mammals, tolower)
 ```
 
 When naming columns, blank spaces are often added (don't do this, please). Here is a trick to remove these.  
 ```{r}
-#select_all(mammals, ~str_replace(., " ", "_"))
+select_all(mammals, ~str_replace(., " ", "_"))
 ```
 
 ## That's it! Let's take a break and then move on to part 2! 

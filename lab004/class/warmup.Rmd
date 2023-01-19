@@ -1,0 +1,51 @@
+---
+title: "Lab 4 warm up"
+author: "Bode Wang"
+date: "`r Sys.Date()`"
+output: md_document
+---
+
+
+## Warm-up
+> 1. In a new R Markdown document, load the tidyverse and a package called `palmerpenguins`.
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+?palmerpenguins
+```
+
+> 2. What are the dimensions of the dataset `penguins`?
+
+```{r}
+dim(penguins)
+```
+
+> 3. What are the names of the variables in the `penguins` dataset?
+
+```{r}
+names(penguins)
+```
+
+> 4. How many individuals were sampled on each island in the `penguins` dataset?
+
+```{r}
+table(penguins$island)
+```
+
+```{r}
+# show number of na in each column
+colSums(is.na(penguins))
+```
+
+> 5. What is the mean body mass for all individuals in the `penguins` dataset?
+
+```{r}
+mean(
+    penguins$body_mass_g[!is.na(penguins$body_mass_g)]
+)
+```
+
+```{r}
+mean(penguins$body_mass_g, na.rm = TRUE)
+```
