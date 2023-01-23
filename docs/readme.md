@@ -4,6 +4,10 @@
 
 > Link to the [Github Repo](https://github.com/wangb24/BIS15W2023_bwang) <sub>Login Needed</sub>
 
+### Lab 4
+
+- [Homework: lab 4 hw](04/lab4_hw.html)
+
 ### Lab 3
 
 - [Homework: lab 3 hw](03/lab3_hw.html)
