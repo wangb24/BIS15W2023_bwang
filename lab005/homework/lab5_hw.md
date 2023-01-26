@@ -883,7 +883,7 @@ levels(good_guys$hair_color)
 ```
 
 ```r
-good_bald_count <- good_guys %>% filter(hair_color == "No Hear") %>% nrow()
+good_bald_count <- good_guys %>% filter(hair_color == "No Hair") %>% nrow()
 levels(bad_guys$hair_color)
 ```
 
@@ -908,7 +908,15 @@ if(good_bald_count > bad_bald_count) {
 ```
 
 ```
-## [1] "more bad guys are bald"
+## [1] "more good guys are bald"
+```
+
+```r
+print(c(good_bald_count, bad_bald_count))
+```
+
+```
+## [1] 37 35
 ```
 
 ```r

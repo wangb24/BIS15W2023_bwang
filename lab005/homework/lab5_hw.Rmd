@@ -125,7 +125,7 @@ rm(bad_guys_tall)
 9. OK, so are there more good guys or bad guys that are bald (personal interest)?
 ```{r}
 levels(good_guys$hair_color)
-good_bald_count <- good_guys %>% filter(hair_color == "No Hear") %>% nrow()
+good_bald_count <- good_guys %>% filter(hair_color == "No Hair") %>% nrow()
 levels(bad_guys$hair_color)
 bad_bald_count <- bad_guys %>% filter(hair_color == "No Hair") %>% nrow()
 if(good_bald_count > bad_bald_count) {
@@ -133,6 +133,7 @@ if(good_bald_count > bad_bald_count) {
 }else {
    print("more bad guys are bald")
 }
+print(c(good_bald_count, bad_bald_count))
 rm(good_bald_count)
 rm(bad_bald_count)
 ```

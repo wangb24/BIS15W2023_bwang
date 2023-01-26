@@ -1173,7 +1173,7 @@ interest)?</li>
 ## [21] &quot;Purple&quot;           &quot;Red&quot;              &quot;Red / Grey&quot;       &quot;Red / Orange&quot;    
 ## [25] &quot;Red / White&quot;      &quot;Silver&quot;           &quot;Strawberry Blond&quot; &quot;White&quot;           
 ## [29] &quot;Yellow&quot;</code></pre>
-<pre class="r"><code>good_bald_count &lt;- good_guys %&gt;% filter(hair_color == &quot;No Hear&quot;) %&gt;% nrow()
+<pre class="r"><code>good_bald_count &lt;- good_guys %&gt;% filter(hair_color == &quot;No Hair&quot;) %&gt;% nrow()
 levels(bad_guys$hair_color)</code></pre>
 <pre><code>##  [1] &quot;Auburn&quot;           &quot;black&quot;            &quot;Black&quot;            &quot;Black / Blue&quot;    
 ##  [5] &quot;blond&quot;            &quot;Blond&quot;            &quot;Blue&quot;             &quot;Brown&quot;           
@@ -1189,7 +1189,9 @@ if(good_bald_count &gt; bad_bald_count) {
 }else {
    print(&quot;more bad guys are bald&quot;)
 }</code></pre>
-<pre><code>## [1] &quot;more bad guys are bald&quot;</code></pre>
+<pre><code>## [1] &quot;more good guys are bald&quot;</code></pre>
+<pre class="r"><code>print(c(good_bald_count, bad_bald_count))</code></pre>
+<pre><code>## [1] 37 35</code></pre>
 <pre class="r"><code>rm(good_bald_count)
 rm(bad_bald_count)</code></pre>
 <ol start="10" style="list-style-type: decimal">
