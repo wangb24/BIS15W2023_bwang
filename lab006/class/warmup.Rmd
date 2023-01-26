@@ -1,0 +1,53 @@
+---
+title: "lab 6 warm up"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        theme: spacelab
+        keep_md: true
+---
+
+## warm up
+
+> 1. Open the data `ecs21351-sup-0003-SupplementS1.csv`
+> 2. Clean the names of the variables
+> 3. Explore the data using a function of your choice
+> 4. Are there more veggie, omni, insecivore, or nectar feeders in the data?
+> 5. Which families are Veggie?
+
+```{r}
+library("tidyverse")
+library("janitor")
+```
+
+```{r}
+# 1. Open the data `ecs21351-sup-0003-SupplementS1.csv`, but start at row 3
+ecosphere <- read_csv("data/ecs21351-sup-0003-SupplementS1.csv", skip = 2)
+```
+
+```{r}
+# 2. Clean the names of the variables
+ecosphere <- janitor::clean_names(ecosphere)
+names(ecosphere)
+```
+
+```{r}
+# 3. Explore the data using a function of your choice
+summary(ecosphere)
+```
+
+
+```{r}
+# 4. Are there more veggie, omni, insecivore, or nectar feeders in the data?
+ecosphere %>%
+    tabyl(diet) %>%
+    arrange(desc(n))
+```
+
+```{r}
+# 5. Which families are Veggie?
+ecosphere %>% 
+    filter(diet == "Vegetation") %>% 
+    select(family) %>% 
+    unique()
+```
