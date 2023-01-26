@@ -1,0 +1,208 @@
+---
+title: "dplyr Superhero"
+date: "`r Sys.Date()`"
+author: "Bode Wang"
+output:
+  html_document: 
+    theme: spacelab
+    toc: yes
+    keep_md: yes
+---
+
+## Load the tidyverse
+```{r}
+library("tidyverse")
+```
+
+## Load the superhero data
+These are data taken from comic books and assembled by fans. The include a good mix of categorical and continuous data.  Data taken from: https://www.kaggle.com/claudiodavi/superhero-set  
+
+Check out the way I am loading these data. If I know there are NAs, I can take care of them at the beginning. But, we should do this very cautiously. At times it is better to keep the original columns and data intact.  
+```{r}
+superhero_info <- readr::read_csv("data/heroes_information.csv", na = c("", "-99", "-"))
+superhero_info$Gender <- as.factor(superhero_info$Gender)
+superhero_info$`Eye color` <- as.factor(superhero_info$`Eye color`)
+superhero_info$Race <- as.factor(superhero_info$Race)
+superhero_info$`Hair color` <- as.factor(superhero_info$`Hair color`)
+superhero_info$Publisher <- as.factor(superhero_info$Publisher)
+superhero_info$Alignment <- as.factor(superhero_info$Alignment)
+superhero_info$`Skin color` <- as.factor(superhero_info$`Skin color`)
+```
+
+```{r}
+superhero_powers <- readr::read_csv("data/super_hero_powers.csv", na = c("", "-99", "-"))
+```
+
+## Data tidy
+1. Some of the names used in the `superhero_info` data are problematic so you should rename them here.  
+```{r}
+names(superhero_info) <- sub(" ", "_", tolower(names(superhero_info)))
+names(superhero_info)
+```
+
+Yikes! `superhero_powers` has a lot of variables that are poorly named. We need some R superpowers...
+```{r}
+head(superhero_powers)
+names(superhero_powers)
+```
+
+## `janitor`
+The [janitor](https://garthtarr.github.io/meatR/janitor.html) package is your friend. Make sure to install it and then load the library.  
+```{r}
+# install.packages("janitor")
+library("janitor")
+```
+
+The `clean_names` function takes care of everything in one line! Now that's a superpower!
+```{r}
+superhero_powers <- janitor::clean_names(superhero_powers)
+names(superhero_powers)
+```
+
+## `tabyl`
+The `janitor` package has many awesome functions that we will explore. Here is its version of `table` which not only produces counts but also percentages. Very handy! Let's use it to explore the proportion of good guys and bad guys in the `superhero_info` data.  
+
+```{r}
+tabyl(superhero_info, alignment)
+```
+
+2. Notice that we have some neutral superheros! Who are they?
+```{r}
+neutral_heros <- superhero_info %>% filter(alignment == "neutral")
+neutral_heros$name
+rm(neutral_heros)
+```
+
+## `superhero_info`
+3. Let's say we are only interested in the variables name, alignment, and "race". How would you isolate these variables from `superhero_info`?
+```{r}
+heros_info_interest <- superhero_info %>% select(name, alignment, race)
+head(heros_info_interest)
+rm(heros_info_interest)
+```
+
+## Not Human
+4. List all of the superheros that are not human.
+```{r}
+non_human_heros <- superhero_info %>% 
+                   filter(!grepl("^(H|h)uman ?[A-Za-z/ ]*$", race))
+tabyl(non_human_heros, race)
+non_human_heros$name
+rm(non_human_heros)
+```
+
+## Good and Evil
+5. Let's make two different data frames, one focused on the "good guys" and another focused on the "bad guys".
+```{r}
+good_guys <- superhero_info %>% filter(alignment == "good")
+head(good_guys)
+```
+
+```{r}
+bad_guys <- superhero_info %>% filter(alignment == "bad")
+head(bad_guys)
+```
+
+6. For the good guys, use the `tabyl` function to summarize their "race".
+```{r}
+tabyl(good_guys, race)
+```
+
+7. Among the good guys, Who are the Asgardians?
+```{r}
+good_guys_asgardian <- good_guys %>% filter(race == "Asgardian")
+good_guys_asgardian$name
+rm(good_guys_asgardian)
+```
+
+8. Among the bad guys, who are the male humans over 200 inches in height?
+```{r}
+bad_guys_tall <- bad_guys %>% filter(height > 200)
+bad_guys_tall$name
+rm(bad_guys_tall)
+```
+
+9. OK, so are there more good guys or bad guys that are bald (personal interest)?
+```{r}
+levels(good_guys$hair_color)
+good_bald_count <- good_guys %>% filter(hair_color == "No Hear") %>% nrow()
+levels(bad_guys$hair_color)
+bad_bald_count <- bad_guys %>% filter(hair_color == "No Hair") %>% nrow()
+if(good_bald_count > bad_bald_count) {
+  print("more good guys are bald")
+}else {
+   print("more bad guys are bald")
+}
+rm(good_bald_count)
+rm(bad_bald_count)
+```
+
+
+10.  Let's explore who the really "big" superheros are. In the `superhero_info` data, which have a height over 200 or weight greater than or equal to 450?
+
+> do you mean 300 in this question? 
+
+```{r}
+big_heros <- superhero_info %>% filter(height > 300 | weight >= 450)
+nrow(big_heros)
+big_heros$name
+```
+
+1.  Just to be clear on the `|` operator,  have a look at the superheros over 300 in height...
+```{r}
+tall_hero <- filter(superhero_info, height > 300)
+nrow(tall_hero)
+```
+
+1.  ...and the superheros over 450 in weight. Bonus question! Why do we not have 16 rows in question #10?
+```{r}
+heavy_hero <- filter(superhero_info, weight >= 450)
+nrow(heavy_hero)
+```
+
+```{r}
+# because two heros are both tall and heavy
+intersect(heavy_hero$name, tall_hero$name)
+```
+
+## Height to Weight Ratio
+13. It's easy to be strong when you are heavy and tall, but who is heavy and short? Which superheros have the highest height to weight ratio?
+```{r}
+superhero_info_ratio <- superhero_info %>%
+                        mutate(ratio = height / weight) %>%
+                        select(name, ratio, height, weight) %>%
+                        arrange(desc(ratio))
+dim(superhero_info_ratio)
+head(superhero_info_ratio, n=10)
+```
+
+## `superhero_powers`
+Have a quick look at the `superhero_powers` data frame.  
+```{r}
+glimpse(superhero_powers)
+```
+
+14. How many superheros have a combination of accelerated healing, durability, and super strength?
+```{r}
+superhero_powers %>% 
+  filter(accelerated_healing == 1 & durability == 1 & super_strength == 1) %>% 
+  nrow()
+```
+
+## Your Favorite
+15. Pick your favorite superhero and let's see their powers!
+```{r}
+set.seed(233)
+my_hero <- sample(superhero_info$name, 1)
+my_hero
+```
+
+```{r}
+my_hero_power <- superhero_powers %>% filter(hero_names == my_hero)
+power <- unname(unlist(as.vector(my_hero_power[1, 2:ncol(my_hero_power)])))
+power <- c(FALSE, power)
+names(my_hero_power)[power]
+```
+
+## Push your final code to GitHub!
+Please be sure that you check the `keep md` file in the knit preferences.   
