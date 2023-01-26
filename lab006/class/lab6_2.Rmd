@@ -2,12 +2,10 @@
 title: "summarize practice, `count()`, `across()`"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    theme: spacelab
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: yes
+    html_document:
+        theme: spacelab
+        toc: yes
+        toc_float: yes
 ---
 
 ## Learning Goals
@@ -31,22 +29,21 @@ glimpse(penguins)
 
 As biologists, a good question that we may ask is how do the measured variables differ by island (on average)?
 ```{r}
-
+penguins %>%
+    group_by(island) %>%
+    summarize(
+        mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE),
+        mean_bill_depth_mm = mean(bill_depth_mm, na.rm = TRUE),
+        mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE),
+        mean_body_mass_g = mean(body_mass_g, na.rm = TRUE)
+    )
 ```
 
-Why do we have NA here? Do all of these penguins lack data?
-```{r}
-
-```
-
-Well, that won't work so let's remove the NAs and recalculate.
-```{r}
-
-```
 
 What if we are interested in the number of observations (penguins) by species and island?
 ```{r}
 names(penguins)
+
 ```
 
 ```{r}
@@ -58,34 +55,34 @@ Although these summary functions are super helpful, oftentimes we are mostly int
 
 `count()` is an easy way of determining how many observations you have within a column. It acts like a combination of `group_by()` and `n()`.
 ```{r}
-penguins %>% 
-  count(island, sort = T) #sort=T sorts the column in descending order
+penguins %>%
+    count(island, sort = TRUE) #sort=T sorts the column in descending order
 ```
 
 Compare this with `summarize()` and `group_by()`.
 ```{r}
-penguins %>% 
-  group_by(island) %>% 
-  summarize(n=n())
+penguins %>%
+    group_by(island) %>%
+    summarize(n = n())
 ```
 
 You can also use `count()` across multiple variables.
 ```{r}
-penguins %>% 
-  count(island, species, sort = T) # sort=T will arrange in descending order
+penguins %>%
+    count(island, species, sort = TRUE) # sort=T will arrange in descending order
 ```
 
 For counts, I often prefer `tabyl()`. Lots of options are supported in [tabyl](https://cran.r-project.org/web/packages/janitor/vignettes/tabyls.html)
 ```{r}
-penguins %>% 
-  tabyl(island, species)
+penguins %>%
+    tabyl(island, species)
 ```
 
 ```{r}
-penguins %>% 
-  tabyl(species, island) %>% 
-  adorn_percentages() %>%
-  adorn_pct_formatting(digits = 2)
+penguins %>%
+    tabyl(species, island) %>%
+    adorn_percentages() %>%
+    adorn_pct_formatting(digits = 2)
 ```
 
 ## Practice
@@ -110,9 +107,9 @@ What about using `filter()` and `select()` across multiple variables? There is a
 What if we wanted to apply summarize in order to produce distinct counts over multiple variables; i.e. species, island, and sex? Although this isn't a lot of coding you can image that with a lot of variables it would be cumbersome.
 ```{r}
 penguins %>%
-  summarize(distinct_species = n_distinct(species),
-            distinct_island = n_distinct(island),
-            distinct_sex = n_distinct(sex))
+    summarize(distinct_species = n_distinct(species),
+                        distinct_island = n_distinct(island),
+                        distinct_sex = n_distinct(sex))
 ```
 
 ```{r}
@@ -122,39 +119,39 @@ names(penguins)
 By using `across()` we can reduce the clutter and make things cleaner. 
 ```{r}
 penguins %>%
-  summarize(across(c(species, island, sex), n_distinct))
+    summarize(across(c(species, island, sex), n_distinct))
 ```
 
 This is very helpful for continuous variables.
 ```{r}
 penguins %>%
-  summarize(across(contains("mm"), mean, na.rm=T))
+    summarize(across(contains("mm"), mean, na.rm=T))
 ```
 
 `group_by` also works.
 ```{r}
 penguins %>%
-  group_by(sex) %>% 
-  summarize(across(contains("mm"), mean, na.rm=T))
+    group_by(sex) %>% 
+    summarize(across(contains("mm"), mean, na.rm=T))
 ```
 
 Here we summarize across all variables.
 ```{r}
 penguins %>%
-  summarise_all(mean, na.rm=T)
+    summarise_all(mean, na.rm=T)
 ```
 
 Operators can also work, here I am summarizing across all variables except `species`, `island`, `sex`, and `year`.
 ```{r}
 penguins %>%
-  summarise(across(!c(species, island, sex, year), 
-                   mean, na.rm=T))
+    summarise(across(!c(species, island, sex, year), 
+                                     mean, na.rm=T))
 ```
 
 All variables that include "bill"...all of the other dplyr operators also work.
 ```{r}
 penguins %>%
-  summarise(across(starts_with("bill"), mean, na.rm=T))
+    summarise(across(starts_with("bill"), mean, na.rm=T))
 ```
 
 ## Practice
