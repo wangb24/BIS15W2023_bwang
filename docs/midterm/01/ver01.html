@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Bode Wang" />
+<meta name="author" content="Please Add Your Name Here" />
 
 <meta name="date" content="2023-01-31" />
 
@@ -375,7 +375,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Midterm 1</h1>
-<h4 class="author">Bode Wang</h4>
+<h4 class="author">Please Add Your Name Here</h4>
 <h4 class="date">2023-01-31</h4>
 
 </div>
@@ -427,9 +427,8 @@ original publication.</p>
 <pre class="r"><code>ecosphere &lt;- read_csv(&quot;data/ecs21351-sup-0003-SupplementS1.csv&quot;, skip=2) %&gt;% 
   clean_names() %&gt;%
   slice(1:(n() - 18)) # this removes the footer</code></pre>
-<div id="problem-1.-1-point-lets-start-with-some-data-exploration.-what-are-the-variable-names" class="section level4">
-<h4>Problem 1. (1 point) Let’s start with some data exploration. What
-are the variable names?</h4>
+<p>Problem 1. (1 point) Let’s start with some data exploration. What are
+the variable names?</p>
 <pre class="r"><code>names(ecosphere)</code></pre>
 <pre><code>##  [1] &quot;order&quot;                       &quot;family&quot;                     
 ##  [3] &quot;common_name&quot;                 &quot;scientific_name&quot;            
@@ -442,10 +441,8 @@ are the variable names?</h4>
 ## [17] &quot;circles&quot;                     &quot;feeder_bird&quot;                
 ## [19] &quot;median_trend&quot;                &quot;lower_95_percent_ci&quot;        
 ## [21] &quot;upper_95_percent_ci&quot;</code></pre>
-</div>
-<div id="problem-2.-1-point-use-the-function-of-your-choice-to-summarize-the-data." class="section level4">
-<h4>Problem 2. (1 point) Use the function of your choice to summarize
-the data.</h4>
+<p>Problem 2. (1 point) Use the function of your choice to summarize the
+data.</p>
 <pre class="r"><code>glimpse(ecosphere)</code></pre>
 <pre><code>## Rows: 551
 ## Columns: 21
@@ -535,10 +532,8 @@ the data.</h4>
 ## #   upper_95_percent_ci &lt;dbl&gt;, and abbreviated variable names ¹​common_name,
 ## #   ²​scientific_name, ³​life_expectancy, ⁴​urban_affiliate, ⁵​migratory_strategy,
 ## #   ⁶​log10_mass</code></pre>
-</div>
-<div id="problem-3.-2-points-how-many-distinct-orders-of-birds-are-represented-in-the-data" class="section level4">
-<h4>Problem 3. (2 points) How many distinct orders of birds are
-represented in the data?</h4>
+<p>Problem 3. (2 points) How many distinct orders of birds are
+represented in the data?</p>
 <pre class="r"><code>n_distinct(ecosphere$order)</code></pre>
 <pre><code>## [1] 19</code></pre>
 <pre class="r"><code>unique(ecosphere$order)</code></pre>
@@ -549,10 +544,8 @@ represented in the data?</h4>
 ## [13] &quot;Passeriformes&quot;     &quot;Piciformes&quot;        &quot;Podicipediformes&quot; 
 ## [16] &quot;Procellariiformes&quot; &quot;Psittaciformes&quot;    &quot;Strigiformes&quot;     
 ## [19] &quot;Trogoniformes&quot;</code></pre>
-</div>
-<div id="problem-4.-2-points-which-habitat-has-the-highest-diversity-number-of-species-in-the-data" class="section level4">
-<h4>Problem 4. (2 points) Which habitat has the highest diversity
-(number of species) in the data?</h4>
+<p>Problem 4. (2 points) Which habitat has the highest diversity (number
+of species) in the data?</p>
 <pre class="r"><code>ecosphere %&gt;%
   group_by(habitat) %&gt;%
   summarize(`unique species` = n_distinct(scientific_name)) %&gt;%
@@ -573,11 +566,9 @@ Look specifically at the examples (at the bottom) for
 unsure, try looking up examples online (<a href="https://rpubs.com/techanswers88/dplyr-slice" class="uri">https://rpubs.com/techanswers88/dplyr-slice</a>). Use this
 new function to answer question 5 below.</p>
 <pre class="r"><code># ?slice_max</code></pre>
-</div>
-<div id="problem-5.-4-points-using-the-slice_max-or-slice_min-function-described-above-which-species-has-the-largest-and-smallest-winter-range" class="section level4">
-<h4>Problem 5. (4 points) Using the <code>slice_max()</code> or
+<p>Problem 5. (4 points) Using the <code>slice_max()</code> or
 <code>slice_min()</code> function described above which species has the
-largest and smallest winter range?</h4>
+largest and smallest winter range?</p>
 <pre class="r"><code>anyNA(ecosphere$winter_range_area)</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code># largest winter range
@@ -596,12 +587,10 @@ ecosphere %&gt;%
 ##   common_name scientific_name winter_range_area
 ##   &lt;chr&gt;       &lt;chr&gt;                       &lt;dbl&gt;
 ## 1 Skylark     Alauda arvensis                11</code></pre>
-</div>
-<div id="problem-6.-2-points-the-family-anatidae-includes-ducks-geese-and-swans.-make-a-new-object-ducks-that-only-includes-species-in-the-family-anatidae.-restrict-this-new-dataframe-to-include-all-variables-except-order-and-family." class="section level4">
-<h4>Problem 6. (2 points) The family Anatidae includes ducks, geese, and
+<p>Problem 6. (2 points) The family Anatidae includes ducks, geese, and
 swans. Make a new object <code>ducks</code> that only includes species
 in the family Anatidae. Restrict this new dataframe to include all
-variables except order and family.</h4>
+variables except order and family.</p>
 <pre class="r"><code>ducks &lt;- ecosphere %&gt;%
   filter(family == &quot;Anatidae&quot;) %&gt;%
   select(-order, -family)
@@ -628,11 +617,9 @@ glimpse(ducks)</code></pre>
 ## $ median_trend                &lt;dbl&gt; 1.014, 0.996, 1.039, 0.998, 1.004, 1.196, …
 ## $ lower_95_percent_ci         &lt;dbl&gt; 0.971, 0.964, 1.016, 0.956, 0.975, 1.152, …
 ## $ upper_95_percent_ci         &lt;dbl&gt; 1.055, 1.009, 1.104, 1.041, 1.036, 1.243, …</code></pre>
-</div>
-<div id="problem-7.-2-points-we-might-assume-that-all-ducks-live-in-wetland-habitat.-is-this-true-for-the-ducks-in-these-data-if-there-are-exceptions-list-the-species-below." class="section level4">
-<h4>Problem 7. (2 points) We might assume that all ducks live in wetland
+<p>Problem 7. (2 points) We might assume that all ducks live in wetland
 habitat. Is this true for the ducks in these data? If there are
-exceptions, list the species below.</h4>
+exceptions, list the species below.</p>
 <pre class="r"><code>tabyl(ducks$habitat)</code></pre>
 <pre><code>##  ducks$habitat  n    percent
 ##          Ocean  1 0.02272727
@@ -644,11 +631,9 @@ exceptions, list the species below.</h4>
 ##   common_name  scientific_name      habitat
 ##   &lt;chr&gt;        &lt;chr&gt;                &lt;chr&gt;  
 ## 1 Common Eider Somateria mollissima Ocean</code></pre>
-</div>
-<div id="problem-8.-4-points-in-ducks-how-is-mean-body-mass-associated-with-migratory-strategy-do-the-ducks-that-migrate-long-distances-have-high-or-low-average-body-mass" class="section level4">
-<h4>Problem 8. (4 points) In ducks, how is mean body mass associated
-with migratory strategy? Do the ducks that migrate long distances have
-high or low average body mass?</h4>
+<p>Problem 8. (4 points) In ducks, how is mean body mass associated with
+migratory strategy? Do the ducks that migrate long distances have high
+or low average body mass?</p>
 <pre class="r"><code>ducks %&gt;%
   group_by(migratory_strategy) %&gt;%
   summarize(`mean log 10 mass` = mean(log10_mass)) %&gt;%
@@ -681,13 +666,11 @@ ducks_tmp %&gt;%
 ## 4 Withdrawal                      2.92        831.          0.0635     3
 ## 5 Long                            2.87        742.          0.0283     2</code></pre>
 <pre class="r"><code>rm(ducks_tmp)</code></pre>
-</div>
-<div id="problem-9.-2-points-accipitridae-is-the-family-that-includes-eagles-hawks-kites-and-osprey.-first-make-a-new-object-eagles-that-only-includes-species-in-the-family-accipitridae.-next-restrict-these-data-to-only-include-the-variables-common_name-scientific_name-and-population_size." class="section level4">
-<h4>Problem 9. (2 points) Accipitridae is the family that includes
+<p>Problem 9. (2 points) Accipitridae is the family that includes
 eagles, hawks, kites, and osprey. First, make a new object
 <code>eagles</code> that only includes species in the family
 Accipitridae. Next, restrict these data to only include the variables
-common_name, scientific_name, and population_size.</h4>
+common_name, scientific_name, and population_size.</p>
 <pre class="r"><code>eagles &lt;- ecosphere %&gt;%
   filter(family == &quot;Accipitridae&quot;) %&gt;%
   select(common_name, scientific_name, population_size)
@@ -697,151 +680,38 @@ glimpse(eagles)</code></pre>
 ## $ common_name     &lt;chr&gt; &quot;Bald Eagle&quot;, &quot;Broad-winged Hawk&quot;, &quot;Cooper&#39;s Hawk&quot;, &quot;F…
 ## $ scientific_name &lt;chr&gt; &quot;Haliaeetus leucocephalus&quot;, &quot;Buteo platypterus&quot;, &quot;Acci…
 ## $ population_size &lt;dbl&gt; NA, 1700000, 700000, 80000, 130000, NA, 50000, NA, 200…</code></pre>
-</div>
-<div id="problem-10.-4-points-in-the-eagles-data-any-species-with-a-population-size-less-than-250000-individuals-is-threatened.-make-a-new-column-conservation_status-that-shows-whether-or-not-a-species-is-threatened." class="section level4">
-<h4>Problem 10. (4 points) In the eagles data, any species with a
+<p>Problem 10. (4 points) In the eagles data, any species with a
 population size less than 250,000 individuals is threatened. Make a new
 column <code>conservation_status</code> that shows whether or not a
-species is threatened.</h4>
+species is threatened.</p>
 <pre class="r"><code>eagles &lt;- eagles %&gt;%
   mutate(conservation_status = ifelse(population_size &lt; 250000, &quot;Threatened&quot;, &quot;Not threatened&quot;))
-eagles %&gt;%
-  group_by(conservation_status) %&gt;%
-  summarize(
-    `n` = n(),
-    `min` = min(population_size),
-    `mean population size` = mean(population_size, na.rm = TRUE),
-    `max` = max(population_size),
-    `sd` = sd(population_size, na.rm = TRUE),
-    percentage = n() / nrow(eagles) * 100
-  )</code></pre>
-<pre><code>## # A tibble: 3 × 7
-##   conservation_status     n    min `mean population size`    max      sd perce…¹
-##   &lt;chr&gt;               &lt;int&gt;  &lt;dbl&gt;                  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-## 1 Not threatened          8 300000                 942500    2e6 610053.      40
-## 2 Threatened              4  50000                 115000    2e5  65574.      20
-## 3 &lt;NA&gt;                    8     NA                    NaN   NA       NA       40
-## # … with abbreviated variable name ¹​percentage</code></pre>
-</div>
-<div id="problem-11.-2-points-consider-the-results-from-questions-9-and-10.-are-there-any-species-for-which-their-threatened-status-needs-further-study-how-do-you-know" class="section level4">
-<h4>Problem 11. (2 points) Consider the results from questions 9 and 10.
+glimpse(eagles)</code></pre>
+<pre><code>## Rows: 20
+## Columns: 4
+## $ common_name         &lt;chr&gt; &quot;Bald Eagle&quot;, &quot;Broad-winged Hawk&quot;, &quot;Cooper&#39;s Hawk&quot;…
+## $ scientific_name     &lt;chr&gt; &quot;Haliaeetus leucocephalus&quot;, &quot;Buteo platypterus&quot;, &quot;…
+## $ population_size     &lt;dbl&gt; NA, 1700000, 700000, 80000, 130000, NA, 50000, NA,…
+## $ conservation_status &lt;chr&gt; NA, &quot;Not threatened&quot;, &quot;Not threatened&quot;, &quot;Threatene…</code></pre>
+<p>Problem 11. (2 points) Consider the results from questions 9 and 10.
 Are there any species for which their threatened status needs further
-study? How do you know?</h4>
-<pre class="r"><code># Certain observations are missing population size data,
-# and therefore unable to determine whether they are threatened or not.
-# In other words, we need further study to determine their conservation status.
-eagles %&gt;%
-  filter(is.na(population_size))</code></pre>
-<pre><code>## # A tibble: 8 × 4
-##   common_name       scientific_name          population_size conservation_status
-##   &lt;chr&gt;             &lt;chr&gt;                              &lt;dbl&gt; &lt;chr&gt;              
-## 1 Bald Eagle        Haliaeetus leucocephalus              NA &lt;NA&gt;               
-## 2 Gray Hawk         Buteo nitidus                         NA &lt;NA&gt;               
-## 3 Hook-billed Kite  Chondrohierax uncinatus               NA &lt;NA&gt;               
-## 4 Short-tailed Hawk Buteo brachyurus                      NA &lt;NA&gt;               
-## 5 Snail Kite        Rostrhamus sociabilis                 NA &lt;NA&gt;               
-## 6 White-tailed Hawk Buteo albicaudatus                    NA &lt;NA&gt;               
-## 7 White-tailed Kite Elanus leucurus                       NA &lt;NA&gt;               
-## 8 Zone-tailed Hawk  Buteo albonotatus                     NA &lt;NA&gt;</code></pre>
-</div>
-<div id="problem-12.-4-points-use-the-ecosphere-data-to-perform-one-exploratory-analysis-of-your-choice.-the-analysis-must-have-a-minimum-of-three-lines-and-two-functions.-you-must-also-clearly-state-the-question-you-are-attempting-to-answer." class="section level4">
-<h4>Problem 12. (4 points) Use the <code>ecosphere</code> data to
-perform one exploratory analysis of your choice. The analysis must have
-a minimum of three lines and two functions. You must also clearly state
-the question you are attempting to answer.</h4>
-<pre class="r"><code># finding the relationship between `order` and winter range area.
-ecosphere_tmp &lt;- ecosphere
-ecosphere_tmp$order &lt;- as.factor(ecosphere_tmp$order)
-levels(ecosphere_tmp$order)</code></pre>
-<pre><code>##  [1] &quot;Anseriformes&quot;      &quot;Apodiformes&quot;       &quot;Caprimulgiformes&quot; 
-##  [4] &quot;Charadriiformes&quot;   &quot;Ciconiiformes&quot;     &quot;Columbiformes&quot;    
-##  [7] &quot;Coraciiformes&quot;     &quot;Cuculiformes&quot;      &quot;Falconiformes&quot;    
-## [10] &quot;Galliformes&quot;       &quot;Gaviiformes&quot;       &quot;Gruiformes&quot;       
-## [13] &quot;Passeriformes&quot;     &quot;Piciformes&quot;        &quot;Podicipediformes&quot; 
-## [16] &quot;Procellariiformes&quot; &quot;Psittaciformes&quot;    &quot;Strigiformes&quot;     
-## [19] &quot;Trogoniformes&quot;</code></pre>
-<pre class="r"><code># calculate mean and standard deviation of winter range area for each `order`.
-ecosphere_tmp %&gt;%
-  group_by(order) %&gt;%
-  summarize(
-    `mean winter range area` = mean(winter_range_area, na.rm = TRUE),
-    `sd winter range area` = sd(winter_range_area, na.rm = TRUE),
-    `n` = n()
-  ) %&gt;%
-  arrange(desc(`mean winter range area`))</code></pre>
-<pre><code>## # A tibble: 19 × 4
-##    order             `mean winter range area` `sd winter range area`     n
-##    &lt;fct&gt;                                &lt;dbl&gt;                  &lt;dbl&gt; &lt;int&gt;
-##  1 Procellariiformes                90820461.              75286180.     4
-##  2 Coraciiformes                    14701178                3775727.     3
-##  3 Strigiformes                     10004166.               7632898.    16
-##  4 Falconiformes                     9926824.               5947814.    31
-##  5 Ciconiiformes                     7179297.               7030295.    29
-##  6 Cuculiformes                      6589813.               6592964.     3
-##  7 Columbiformes                     5842705.               5583183.    11
-##  8 Podicipediformes                  5295708.               5688340.     6
-##  9 Caprimulgiformes                  5216400.               6001808.     5
-## 10 Gruiformes                        4641162.               5207483.    12
-## 11 Anseriformes                      4284205.               3673501.    44
-## 12 Charadriiformes                   3840377.               5451317.    81
-## 13 Piciformes                        3709689.               4035105.    22
-## 14 Passeriformes                     3486104.               4070096.   237
-## 15 Galliformes                       3060477.               2757039.    21
-## 16 Psittaciformes                    3006704.               3394194.     6
-## 17 Gaviiformes                        783892                 376656.     4
-## 18 Trogoniformes                      654543                     NA      1
-## 19 Apodiformes                        577243.                434982.    15</code></pre>
-<pre class="r"><code># categorize winter range area into small, medium, and large.
-lo &lt;- quantile(ecosphere_tmp$winter_range_area, 0.33, na.rm = TRUE)
-hi &lt;- quantile(ecosphere_tmp$winter_range_area, 0.66, na.rm = TRUE)
-ecosphere_tmp &lt;- ecosphere_tmp %&gt;%
-  mutate(
-    winter_range_size = ifelse(
-      winter_range_area &lt; lo,
-      &quot;small&quot;,
-      ifelse(winter_range_area &lt; hi, &quot;medium&quot;, &quot;large&quot;)
-    )
-  )
-table(
-  order = ecosphere_tmp$order,
-  winter_range = ecosphere_tmp$winter_range_size
-)</code></pre>
-<pre><code>##                    winter_range
-## order               large medium small
-##   Anseriformes         22      7    15
-##   Apodiformes           0      2    13
-##   Caprimulgiformes      2      2     1
-##   Charadriiformes      18     35    28
-##   Ciconiiformes        14      9     6
-##   Columbiformes         5      2     4
-##   Coraciiformes         3      0     0
-##   Cuculiformes          1      2     0
-##   Falconiformes        25      4     2
-##   Galliformes           5      9     7
-##   Gaviiformes           0      1     3
-##   Gruiformes            5      3     4
-##   Passeriformes        61     91    85
-##   Piciformes            6      8     8
-##   Podicipediformes      2      3     1
-##   Procellariiformes     4      0     0
-##   Psittaciformes        2      1     3
-##   Strigiformes         13      2     1
-##   Trogoniformes         0      0     1</code></pre>
-</div>
-<div id="please-provide-the-names-of-the-students-you-have-worked-with-with-during-the-exam" class="section level4">
-<h4>Please provide the names of the students you have worked with with
-during the exam:</h4>
+study? How do you know?</p>
+<p>Problem 12. (4 points) Use the <code>ecosphere</code> data to perform
+one exploratory analysis of your choice. The analysis must have a
+minimum of three lines and two functions. You must also clearly state
+the question you are attempting to answer.</p>
+<p>Please provide the names of the students you have worked with with
+during the exam:</p>
+<pre class="r"><code>collaborators &lt;- data.frame(
+  name = c(&quot;Bode W. (myself)&quot;), 
+  github = c(&quot;wangb24&quot;)
+)
+head(collaborators)</code></pre>
 <pre><code>##               name  github
 ## 1 Bode W. (myself) wangb24</code></pre>
-<blockquote>
-<p><strong>Version 1 of this document can be found <a href="https://github.com/wangb24/BIS15W2023_bwang/tree/3b2ad9ecaed5deb5de46840b0c38b7bb3265f54c/midterm01">here
-(repository)</a></strong> or <a href="https://wangb24.github.io/BIS15W2023_bwang/midterm/01/ver01.html">here
-(github pages)</a></p>
-</blockquote>
 <p>Please be 100% sure your exam is saved, knitted, and pushed to your
 github repository. No need to submit a link on canvas, we will find your
 exam in your repository.</p>
-</div>
 </div>
 
 

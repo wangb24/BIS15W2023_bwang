@@ -1,6 +1,6 @@
 ---
 title: "Midterm 1"
-author: "Please Add Your Name Here"
+author: "Bode Wang"
 date: "2023-01-31"
 output:
   html_document: 
@@ -57,7 +57,7 @@ ecosphere <- read_csv("data/ecs21351-sup-0003-SupplementS1.csv", skip=2) %>%
   slice(1:(n() - 18)) # this removes the footer
 ```
 
-Problem 1. (1 point) Let's start with some data exploration. What are the variable names?
+#### Problem 1. (1 point) Let's start with some data exploration. What are the variable names?
 
 ```r
 names(ecosphere)
@@ -77,7 +77,7 @@ names(ecosphere)
 ## [21] "upper_95_percent_ci"
 ```
 
-Problem 2. (1 point) Use the function of your choice to summarize the data.
+#### Problem 2. (1 point) Use the function of your choice to summarize the data.
 
 ```r
 glimpse(ecosphere)
@@ -188,7 +188,7 @@ head(ecosphere)
 ## #   ⁶​log10_mass
 ```
 
-Problem 3. (2 points) How many distinct orders of birds are represented in the data?
+#### Problem 3. (2 points) How many distinct orders of birds are represented in the data?
 
 ```r
 n_distinct(ecosphere$order)
@@ -213,7 +213,7 @@ unique(ecosphere$order)
 ## [19] "Trogoniformes"
 ```
 
-Problem 4. (2 points) Which habitat has the highest diversity (number of species) in the data?
+#### Problem 4. (2 points) Which habitat has the highest diversity (number of species) in the data?
 
 ```r
 ecosphere %>%
@@ -241,7 +241,7 @@ Run the code below to learn about the `slice` function. Look specifically at the
 # ?slice_max
 ```
 
-Problem 5. (4 points) Using the `slice_max()` or `slice_min()` function described above which species has the largest and smallest winter range?
+#### Problem 5. (4 points) Using the `slice_max()` or `slice_min()` function described above which species has the largest and smallest winter range?
 
 ```r
 anyNA(ecosphere$winter_range_area)
@@ -281,7 +281,7 @@ ecosphere %>%
 ## 1 Skylark     Alauda arvensis                11
 ```
 
-Problem 6. (2 points) The family Anatidae includes ducks, geese, and swans. Make a new object `ducks` that only includes species in the family Anatidae. Restrict this new dataframe to include all variables except order and family.
+#### Problem 6. (2 points) The family Anatidae includes ducks, geese, and swans. Make a new object `ducks` that only includes species in the family Anatidae. Restrict this new dataframe to include all variables except order and family.
 
 ```r
 ducks <- ecosphere %>%
@@ -316,7 +316,7 @@ glimpse(ducks)
 ```
 
 
-Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is this true for the ducks in these data? If there are exceptions, list the species below.
+#### Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is this true for the ducks in these data? If there are exceptions, list the species below.
 
 ```r
 tabyl(ducks$habitat)
@@ -341,7 +341,7 @@ ducks %>%
 ## 1 Common Eider Somateria mollissima Ocean
 ```
 
-Problem 8. (4 points) In ducks, how is mean body mass associated with migratory strategy? Do the ducks that migrate long distances have high or low average body mass?
+#### Problem 8. (4 points) In ducks, how is mean body mass associated with migratory strategy? Do the ducks that migrate long distances have high or low average body mass?
 
 ```r
 ducks %>%
@@ -391,7 +391,7 @@ ducks_tmp %>%
 rm(ducks_tmp)
 ```
 
-Problem 9. (2 points) Accipitridae is the family that includes eagles, hawks, kites, and osprey. First, make a new object `eagles` that only includes species in the family Accipitridae. Next, restrict these data to only include the variables common_name, scientific_name, and population_size.
+#### Problem 9. (2 points) Accipitridae is the family that includes eagles, hawks, kites, and osprey. First, make a new object `eagles` that only includes species in the family Accipitridae. Next, restrict these data to only include the variables common_name, scientific_name, and population_size.
 
 ```r
 eagles <- ecosphere %>%
@@ -408,42 +408,167 @@ glimpse(eagles)
 ## $ population_size <dbl> NA, 1700000, 700000, 80000, 130000, NA, 50000, NA, 200…
 ```
 
-Problem 10. (4 points) In the eagles data, any species with a population size less than 250,000 individuals is threatened. Make a new column `conservation_status` that shows whether or not a species is threatened.
+#### Problem 10. (4 points) In the eagles data, any species with a population size less than 250,000 individuals is threatened. Make a new column `conservation_status` that shows whether or not a species is threatened.
 
 ```r
 eagles <- eagles %>%
   mutate(conservation_status = ifelse(population_size < 250000, "Threatened", "Not threatened"))
-glimpse(eagles)
+eagles %>%
+  group_by(conservation_status) %>%
+  summarize(
+    `n` = n(),
+    `min` = min(population_size),
+    `mean population size` = mean(population_size, na.rm = TRUE),
+    `max` = max(population_size),
+    `sd` = sd(population_size, na.rm = TRUE),
+    percentage = n() / nrow(eagles) * 100
+  )
 ```
 
 ```
-## Rows: 20
-## Columns: 4
-## $ common_name         <chr> "Bald Eagle", "Broad-winged Hawk", "Cooper's Hawk"…
-## $ scientific_name     <chr> "Haliaeetus leucocephalus", "Buteo platypterus", "…
-## $ population_size     <dbl> NA, 1700000, 700000, 80000, 130000, NA, 50000, NA,…
-## $ conservation_status <chr> NA, "Not threatened", "Not threatened", "Threatene…
+## # A tibble: 3 × 7
+##   conservation_status     n    min `mean population size`    max      sd perce…¹
+##   <chr>               <int>  <dbl>                  <dbl>  <dbl>   <dbl>   <dbl>
+## 1 Not threatened          8 300000                 942500    2e6 610053.      40
+## 2 Threatened              4  50000                 115000    2e5  65574.      20
+## 3 <NA>                    8     NA                    NaN   NA       NA       40
+## # … with abbreviated variable name ¹​percentage
 ```
 
-Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
-
-
-Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
-
-
-Please provide the names of the students you have worked with with during the exam:
+#### Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
 
 ```r
-collaborators <- data.frame(
-  name = c("Bode W. (myself)"), 
-  github = c("wangb24")
-)
-head(collaborators)
+# Certain observations are missing population size data,
+# and therefore unable to determine whether they are threatened or not.
+# In other words, we need further study to determine their conservation status.
+eagles %>%
+  filter(is.na(population_size))
 ```
+
+```
+## # A tibble: 8 × 4
+##   common_name       scientific_name          population_size conservation_status
+##   <chr>             <chr>                              <dbl> <chr>              
+## 1 Bald Eagle        Haliaeetus leucocephalus              NA <NA>               
+## 2 Gray Hawk         Buteo nitidus                         NA <NA>               
+## 3 Hook-billed Kite  Chondrohierax uncinatus               NA <NA>               
+## 4 Short-tailed Hawk Buteo brachyurus                      NA <NA>               
+## 5 Snail Kite        Rostrhamus sociabilis                 NA <NA>               
+## 6 White-tailed Hawk Buteo albicaudatus                    NA <NA>               
+## 7 White-tailed Kite Elanus leucurus                       NA <NA>               
+## 8 Zone-tailed Hawk  Buteo albonotatus                     NA <NA>
+```
+
+#### Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
+
+
+```r
+# finding the relationship between `order` and winter range area.
+ecosphere_tmp <- ecosphere
+ecosphere_tmp$order <- as.factor(ecosphere_tmp$order)
+levels(ecosphere_tmp$order)
+```
+
+```
+##  [1] "Anseriformes"      "Apodiformes"       "Caprimulgiformes" 
+##  [4] "Charadriiformes"   "Ciconiiformes"     "Columbiformes"    
+##  [7] "Coraciiformes"     "Cuculiformes"      "Falconiformes"    
+## [10] "Galliformes"       "Gaviiformes"       "Gruiformes"       
+## [13] "Passeriformes"     "Piciformes"        "Podicipediformes" 
+## [16] "Procellariiformes" "Psittaciformes"    "Strigiformes"     
+## [19] "Trogoniformes"
+```
+
+
+```r
+# calculate mean and standard deviation of winter range area for each `order`.
+ecosphere_tmp %>%
+  group_by(order) %>%
+  summarize(
+    `mean winter range area` = mean(winter_range_area, na.rm = TRUE),
+    `sd winter range area` = sd(winter_range_area, na.rm = TRUE),
+    `n` = n()
+  ) %>%
+  arrange(desc(`mean winter range area`))
+```
+
+```
+## # A tibble: 19 × 4
+##    order             `mean winter range area` `sd winter range area`     n
+##    <fct>                                <dbl>                  <dbl> <int>
+##  1 Procellariiformes                90820461.              75286180.     4
+##  2 Coraciiformes                    14701178                3775727.     3
+##  3 Strigiformes                     10004166.               7632898.    16
+##  4 Falconiformes                     9926824.               5947814.    31
+##  5 Ciconiiformes                     7179297.               7030295.    29
+##  6 Cuculiformes                      6589813.               6592964.     3
+##  7 Columbiformes                     5842705.               5583183.    11
+##  8 Podicipediformes                  5295708.               5688340.     6
+##  9 Caprimulgiformes                  5216400.               6001808.     5
+## 10 Gruiformes                        4641162.               5207483.    12
+## 11 Anseriformes                      4284205.               3673501.    44
+## 12 Charadriiformes                   3840377.               5451317.    81
+## 13 Piciformes                        3709689.               4035105.    22
+## 14 Passeriformes                     3486104.               4070096.   237
+## 15 Galliformes                       3060477.               2757039.    21
+## 16 Psittaciformes                    3006704.               3394194.     6
+## 17 Gaviiformes                        783892                 376656.     4
+## 18 Trogoniformes                      654543                     NA      1
+## 19 Apodiformes                        577243.                434982.    15
+```
+
+
+```r
+# categorize winter range area into small, medium, and large.
+lo <- quantile(ecosphere_tmp$winter_range_area, 0.33, na.rm = TRUE)
+hi <- quantile(ecosphere_tmp$winter_range_area, 0.66, na.rm = TRUE)
+ecosphere_tmp <- ecosphere_tmp %>%
+  mutate(
+    winter_range_size = ifelse(
+      winter_range_area < lo,
+      "small",
+      ifelse(winter_range_area < hi, "medium", "large")
+    )
+  )
+table(
+  order = ecosphere_tmp$order,
+  winter_range = ecosphere_tmp$winter_range_size
+)
+```
+
+```
+##                    winter_range
+## order               large medium small
+##   Anseriformes         22      7    15
+##   Apodiformes           0      2    13
+##   Caprimulgiformes      2      2     1
+##   Charadriiformes      18     35    28
+##   Ciconiiformes        14      9     6
+##   Columbiformes         5      2     4
+##   Coraciiformes         3      0     0
+##   Cuculiformes          1      2     0
+##   Falconiformes        25      4     2
+##   Galliformes           5      9     7
+##   Gaviiformes           0      1     3
+##   Gruiformes            5      3     4
+##   Passeriformes        61     91    85
+##   Piciformes            6      8     8
+##   Podicipediformes      2      3     1
+##   Procellariiformes     4      0     0
+##   Psittaciformes        2      1     3
+##   Strigiformes         13      2     1
+##   Trogoniformes         0      0     1
+```
+
+#### Please provide the names of the students you have worked with with during the exam:
+
 
 ```
 ##               name  github
 ## 1 Bode W. (myself) wangb24
 ```
+
+> **Version 1 of this document can be found [here (repository)](https://github.com/wangb24/BIS15W2023_bwang/tree/3b2ad9ecaed5deb5de46840b0c38b7bb3265f54c/midterm01)**
+> or [here (github pages)](https://wangb24.github.io/BIS15W2023_bwang/midterm/01/ver01.html)
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.

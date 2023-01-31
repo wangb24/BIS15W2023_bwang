@@ -4,7 +4,9 @@
 
 > Link to the [Github Repo](https://github.com/wangb24/BIS15W2023_bwang) <sub>Login Needed</sub>
 
+### Midterm 1
 
+- [Midterm 1](midterm/01/index.html)
 
 ### Lab 5
 
