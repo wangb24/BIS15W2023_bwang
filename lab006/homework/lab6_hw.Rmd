@@ -1,6 +1,6 @@
 ---
 title: "Lab 6 Homework"
-author: "Joel Ledford"
+author: "Bode W"
 date: "`r Sys.Date()`"
 output:
     html_document: 
@@ -19,6 +19,7 @@ Make sure to use the formatting conventions of RMarkdown to make your report nea
 
 ## Load the libraries
 ```{r message=FALSE, warning=FALSE}
+# install.packages(c("tidyverse", "janitor", "skimr"), repos = "http://cran.us.r-project.org")
 library(tidyverse)
 library(janitor)
 library(skimr)
