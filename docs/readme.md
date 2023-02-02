@@ -8,6 +8,10 @@
 
 - [Midterm 1](midterm/01/index.html)
 
+### Lab 6
+
+- [Homework: lab 6 hw](06/lab6_hw.html)
+
 ### Lab 5
 
 - [Homework: lab 5 hw](05/lab5_hw.html)
