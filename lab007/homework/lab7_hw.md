@@ -1,7 +1,7 @@
 ---
 title: "Lab 7 Homework"
 author: "Bode W"
-date: "2023-02-05"
+date: "2023-02-06"
 output:
   html_document: 
     theme: spacelab
@@ -223,7 +223,58 @@ glimpse(amphibio)
 # amniota_tidy <- amniota %>%
 #   na_if(-999) %>%
 #   janitor::clean_names()
+sessionInfo()
+```
 
+```
+## R version 4.2.2 Patched (2022-11-10 r83330)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 22.04.1 LTS
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
+## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so
+## 
+## locale:
+##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+##  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+##  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+## [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] naniar_1.0.0    skimr_2.1.5     janitor_2.2.0   forcats_1.0.0  
+##  [5] stringr_1.5.0   dplyr_1.1.0     purrr_1.0.1     readr_2.1.3    
+##  [9] tidyr_1.3.0     tibble_3.1.8    ggplot2_3.4.0   tidyverse_1.3.2
+## 
+## loaded via a namespace (and not attached):
+##  [1] lubridate_1.9.1     assertthat_0.2.1    digest_0.6.31      
+##  [4] utf8_1.2.3          R6_2.5.1            cellranger_1.1.0   
+##  [7] repr_1.1.6          backports_1.4.1     reprex_2.0.2       
+## [10] visdat_0.6.0        evaluate_0.20       httr_1.4.4         
+## [13] pillar_1.8.1        rlang_1.0.6         googlesheets4_1.0.1
+## [16] readxl_1.4.1        jquerylib_0.1.4     rmarkdown_2.20     
+## [19] googledrive_2.0.0   bit_4.0.5           munsell_0.5.0      
+## [22] broom_1.0.3         compiler_4.2.2      modelr_0.1.10      
+## [25] xfun_0.37           pkgconfig_2.0.3     base64enc_0.1-3    
+## [28] htmltools_0.5.4     tidyselect_1.2.0    fansi_1.0.4        
+## [31] crayon_1.5.2        tzdb_0.3.0          dbplyr_2.3.0       
+## [34] withr_2.5.0         grid_4.2.2          jsonlite_1.8.4     
+## [37] gtable_0.3.1        lifecycle_1.0.3     DBI_1.1.3          
+## [40] magrittr_2.0.3      scales_1.2.1        vroom_1.6.1        
+## [43] cli_3.6.0           stringi_1.7.12      cachem_1.0.6       
+## [46] fs_1.6.0            snakecase_0.11.0    xml2_1.3.3         
+## [49] bslib_0.4.2         ellipsis_0.3.2      generics_0.1.3     
+## [52] vctrs_0.5.2         tools_4.2.2         bit64_4.0.5        
+## [55] glue_1.6.2          hms_1.1.2           parallel_4.2.2     
+## [58] fastmap_1.1.0       yaml_2.3.7          timechange_0.2.0   
+## [61] colorspace_2.1-0    gargle_1.3.0        rvest_1.0.3        
+## [64] knitr_1.42          haven_2.5.1         sass_0.4.5
+```
+
+```r
 ## so, I'm going to use the following code instead:
 amniota_tidy <- amniota %>% clean_names()
 amniota_tidy[amniota_tidy == -999] <- NA
@@ -564,12 +615,12 @@ problems(amniota_)
 
 ```
 ## # A tibble: 4 × 5
-##     row   col expected           actual file 
-##   <int> <int> <chr>              <chr>  <chr>
-## 1 10410    34 1/0/T/F/TRUE/FALSE 194000 ""   
-## 2 10411    34 1/0/T/F/TRUE/FALSE 194000 ""   
-## 3 12601    34 1/0/T/F/TRUE/FALSE 100    ""   
-## 4 12646    34 1/0/T/F/TRUE/FALSE 30     ""
+##     row   col expected           actual file                                    
+##   <int> <int> <chr>              <chr>  <chr>                                   
+## 1 10410    34 1/0/T/F/TRUE/FALSE 194000 /mnt/c/Users/wangb/OneDrive/Desktop/BIS…
+## 2 10411    34 1/0/T/F/TRUE/FALSE 194000 /mnt/c/Users/wangb/OneDrive/Desktop/BIS…
+## 3 12601    34 1/0/T/F/TRUE/FALSE 100    /mnt/c/Users/wangb/OneDrive/Desktop/BIS…
+## 4 12646    34 1/0/T/F/TRUE/FALSE 30     /mnt/c/Users/wangb/OneDrive/Desktop/BIS…
 ```
 
 ```r

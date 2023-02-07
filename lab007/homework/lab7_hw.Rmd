@@ -68,6 +68,8 @@ glimpse(amphibio)
 # amniota_tidy <- amniota %>%
 #   na_if(-999) %>%
 #   janitor::clean_names()
+sessionInfo()
+
 
 ## so, I'm going to use the following code instead:
 amniota_tidy <- amniota %>% clean_names()
