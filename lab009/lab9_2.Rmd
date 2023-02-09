@@ -53,19 +53,33 @@ penguins %>% count(species)
 ```
 
 ```{r}
+penguins %>%
+  count(species) %>%
+  ggplot(aes(x = species, y = n)) +
+  geom_col()
+```
 
+```{r}
+penguins %>%
+  ggplot(aes(x = species)) +
+  geom_bar()
 ```
 
 How about average bill length by sex?
 ```{r}
-penguins %>% 
-  filter(sex!="NA") %>% 
-  group_by(sex) %>% 
-  summarise(ave_bill_length=mean(bill_length_mm))
+penguins %>%
+  filter(sex != "NA") %>%
+  group_by(sex) %>%
+  summarise(ave_bill_length = mean(bill_length_mm))
 ```
 
 ```{r}
-
+penguins %>%
+  filter(!is.na(sex)) %>%
+  group_by(sex) %>%
+  summarise(ave_bill_length = mean(bill_length_mm)) %>%
+  ggplot(aes(x = sex, y = ave_bill_length)) +
+  geom_col()
 ```
 
 ## Box Plots

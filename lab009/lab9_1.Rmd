@@ -29,6 +29,7 @@ library(tidyverse)
 library(naniar)
 library(janitor)
 library(here)
+library(forcats)
 ```
 
 ## Grammar of Graphics
@@ -63,24 +64,37 @@ glimpse(iris)
 
 To make a plot, we need to first specify the data and map the aesthetics. The aesthetics include how each variable in our data set will be used. In the example below, I am using the aes() function to identify the x and y variables in the plot.
 ```{r}
-
+plt = ggplot(
+  data = iris,
+  mapping = aes(
+    x = Species,
+    y = Petal.Length
+  )
+)
+plt
 ```
 
 Notice that we have a nice background, labeled axes, and even a value range of our variables on the y-axis- but no plot. This is because we need to tell ggplot how we want our data represented. This is called the geometry or `geom()`. There are many types of `geom`, see the ggplot [cheatsheet](https://posit.co/resources/cheatsheets/).
 
 Here we specify that we want a boxplot, indicated by `geom_boxplot()`.
 ```{r}
-
+plt <- ggplot(
+  data = iris,
+  mapping = aes(
+    x = Species,
+    y = Petal.Length
+  )
+) + geom_boxplot()
+plt
 ```
 
 ## Practice
 1. Use the iris data to build a scatterplot that compares sepal length vs. sepal width. Use the cheat sheet or help to find the correct `geom_` for a scatterplot.
 ```{r}
-
-```
-
-```{r}
-
+plt <- ggplot(data = iris) + 
+  geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), color = "red") +
+  geom_point(mapping = aes(x = Petal.Length, y = Petal.Width), color = "blue")
+plt
 ```
 
 
@@ -92,13 +106,21 @@ Now that we have a general idea of the syntax, let's start by working with two c
 Reference: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling of animal space use. The American Naturalist 186(2):196-211. http://dx.doi.org/10.1086/682070.  
 Data: http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1  
 ```{r}
-homerange <- read_csv(here("lab9", "data", "Tamburelloetal_HomeRangeDatabase.csv"))
+homerange <- read_csv(here("lab009", "data", "Tamburelloetal_HomeRangeDatabase.csv"))
 ```
 
 ## Practice
 1. What is the structure of the `homerange` data? Does it have any NA's? Is it tidy? Do a quick exploratory analysis of your choice below.
 ```{r}
+head(homerange)
+```
 
+```{r}
+glimpse(homerange)
+```
+
+```{r}
+miss_var_summary(homerange)
 ```
 
 ### 1. Scatter Plots
@@ -110,22 +132,37 @@ names(homerange)
 ```
 
 ```{r}
-
+ggplot(homerange) + 
+  geom_point(mapping = aes(x = log10.mass, y = log10.hra))
 ```
 
 In big data sets with lots of overlapping values, over-plotting can be an issue. `geom_jitter()` is similar to `geom_point()` but it helps with over plotting by adding some random noise to the data and separating some of the individual points.
 ```{r}
-
+ggplot(homerange) +
+  geom_jitter(mapping = aes(x = log10.mass, y = log10.hra))
 ```
 
 To add a regression (best of fit) line, we just add another layer.
 ```{r}
-
+ggplot(
+  homerange,
+  mapping = aes(x = log10.mass, y = log10.hra)
+) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE)
 ```
 
 ### Practice
 1. What is the relationship between log10.hra and log10.preymass? What do you notice about how ggplot treats NA's?
 
+```{r}
+ggplot(
+  homerange,
+  mapping = aes(x = log10.preymass, y = log10.hra)
+) +
+  geom_point(na.rm = TRUE) +
+  stat_smooth(method = lm, se = TRUE, na.rm = TRUE)
+```
 
 ### Bar Plot: `geom_bar()`
 The simplest type of bar plot counts the number of observations in a categorical variable. In this case, we want to know how many observations are present in the variable `trophic.guild`. Notice that we do not specify a y-axis because it is count by default.  
@@ -135,55 +172,81 @@ names(homerange)
 ```
 
 ```{r}
-homerange %>% 
+homerange %>%
   count(trophic.guild)
 ```
 
 Also notice that we can use pipes! The `mapping=` function is implied by `aes` and so is often left out. 
 ```{r}
-homerange %>% 
-  ggplot(aes(x=trophic.guild)) + 
+homerange %>%
+  ggplot(aes(x = trophic.guild)) +
   geom_bar()
 ```
 
 ### Bar Plot: `geom_col()`
 Unlike `geom_bar()`, `geom_col()` allows us to specify an x-axis and a y-axis.
 ```{r}
-homerange %>% 
-  filter(family=="salmonidae") %>%
-  select(common.name, log10.mass) %>% 
-  ggplot(aes(x=common.name, y=log10.mass))+
+homerange %>%
+  filter(family == "salmonidae") %>%
+  select(common.name, log10.mass) %>%
+  ggplot(aes(x = common.name, y = log10.mass)) +
   geom_col()
 ```
 
 `geom_bar()` with `stat="identity"`
 `stat="identity"` allows us to map a variable to the y-axis so that we aren't restricted to counts.
 ```{r}
-homerange %>% 
-  filter(family=="salmonidae") %>% 
-  ggplot(aes(x=common.name, y=log10.mass))+
-  geom_bar(stat="identity")
+homerange %>%
+  filter(family == "salmonidae") %>%
+  ggplot(aes(x = common.name, y = log10.mass)) +
+  geom_bar(stat = "identity")
 ```
 
 The plot below is the same but uses `geom_col()`
 ```{r}
-homerange %>% 
-  group_by(class) %>% 
-  summarize(mean_body_wt=mean(log10.mass)) %>% 
-  ggplot(aes(x=class, y=mean_body_wt))+
+homerange %>%
+  group_by(class) %>%
+  summarize(mean_body_wt = mean(log10.mass)) %>%
+  ggplot(aes(x = class, y = mean_body_wt)) +
   geom_col()
 ```
 
 ## Practice
 1. Filter the `homerange` data to include `mammals` only.
 
+```{r}
+mammals <- homerange %>%
+  filter(class == "mammalia")
+mammals
+```
 
 2. Are there more herbivores or carnivores in mammals? Make a bar plot that shows their relative numbers.
 
+```{r}
+mammals %>%
+  count(trophic.guild) %>%
+  ggplot(aes(x = trophic.guild, y = n)) +
+  geom_col()
+```
 
 3. Make a bar plot that shows the masses of the top 10 smallest mammals.
 
+```{r}
+mammals %>%
+  slice_min(log10.mass, n = 10) %>%
+  ggplot(aes(y = fct_reorder(common.name, -log10.mass), x = log10.mass)) +
+  geom_col() +
+  labs(x = "log10 mass", y = "common name", title = "Top 10 smallest mammals")
+```
 
+```{r}
+mammals %>%
+  slice_min(log10.mass, n = 10) %>%
+  ggplot(aes(x = fct_reorder(common.name, -log10.mass), y = log10.mass)) +
+  geom_col() +
+  labs(x = "common name", y = "log10 mass", title = "Top 10 smallest mammals") +
+  coord_flip()
+```
 ## That's it! Let's take a break and then move on to part 2!  
 
 -->[Home](https://jmledford3115.github.io/datascibiol/)

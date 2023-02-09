@@ -27,16 +27,42 @@ malaria <- read.csv("./data/malaria.csv")
 
 ```{r}
 head(malaria)
+# view(malaria)
 ```
 
 
 2. `rdt` refers to rapid diagnostic test and they are identified here by age group.
 
 ```{r}
-malaria %>% 
-  group_by(age_group) %>% 
-  summarise(n = n())
+malaria_long <- malaria %>%
+    select(-c("malaria_tot")) %>%
+    pivot_longer(
+        col = starts_with("malaria_rdt_"),
+        names_to = "age_group",
+        names_prefix = "malaria_rdt_",
+        values_to = "cases"
+    )
+malaria_long # %>% view
 ```
 
 3. Make the data tidy and store them as a new object.
 4. Which district had the highest *total* number of cases on July 30, 2020?
+
+```{r}
+malaria_long %>%
+    filter(data_date == "2020-07-30") %>%
+    group_by(District) %>%
+    summarize(total_cases = sum(cases, na.rm = TRUE)) %>%
+    arrange(desc(total_cases))
+```
+
+
+```{r}
+malaria %>%
+    filter(data_date == "2020-07-30") %>%
+    group_by(District) %>%
+    summarize(
+        total_cases = sum(malaria_tot, na.rm = TRUE)
+    ) %>%
+    arrange(desc(total_cases))
+```
