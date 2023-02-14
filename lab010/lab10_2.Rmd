@@ -50,24 +50,28 @@ options(scipen=999) #cancels the use of scientific notation for the session
 Reference: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling of animal space use. The American Naturalist 186(2):196-211. http://dx.doi.org/10.1086/682070.  
 Data: http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1  
 ```{r}
-homerange <- read_csv(here("lab10", "data", "Tamburelloetal_HomeRangeDatabase.csv"), na = c("", "NA", "\\"))
+homerange <- read_csv(here("lab010", "data", "Tamburelloetal_HomeRangeDatabase.csv"), na = c("", "NA", "\\"))
 ```
 
 ## A few more useful aesthetics
 There are many options to create nice plots in ggplot. One useful trick is to store the plot as a new object and then experiment with geom's and aesthetics.
 ```{r}
-p <- homerange %>% 
-  ggplot(aes(x= log10.mass, y= log10.hra))
+p <- homerange %>%
+  ggplot(aes(x = log10.mass, y = log10.hra))
 ```
 
 Play with point size.
 ```{r}
-p +geom_point(size=2)
+p + geom_point(size = .75)
 ```
 
 Map shapes to another categorical variable.
 ```{r}
-p+geom_point(aes(shape=thermoregulation, color=thermoregulation), size=1.75)
+p +
+  geom_point(
+    aes(shape = thermoregulation, color = thermoregulation),
+    size = 1.125
+  )
 ```
 
 ## Barplots and multiple variables
@@ -89,22 +93,27 @@ homerange %>%
 
 By specifying `fill=trophic.guild` we build a stacked bar plot that shows the proportion of a given taxonomic group that is an herbivore or carnivore.
 ```{r}
-homerange %>% 
+homerange %>%
   ggplot(aes(x = taxon, fill = trophic.guild)) + geom_bar() +
   coord_flip() +
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = "Taxonomic Group",
-       fill = "Trophic Guild")
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = "Taxonomic Group",
+    fill = "Trophic Guild"
+  )
 ```
 
 We can also have counts of each trophic guild within taxonomic group shown side-by-side by specifying `position="dodge"`.
 ```{r}
 homerange %>% 
-  ggplot(aes(x = taxon, fill = trophic.guild)) + geom_bar(position = "dodge") +
+  ggplot(aes(x = taxon, fill = trophic.guild)) +
+  geom_bar(position = "dodge") +  # side-by-side bars
   coord_flip() +
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = "Taxonomic Group",
-       fill = "Trophic Guild")
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = "Taxonomic Group",
+    fill = "Trophic Guild"
+  )
 ```
 
 Here is the same plot oriented vertically.
@@ -113,17 +122,19 @@ homerange %>%
   ggplot(aes(x = taxon, fill = trophic.guild)) +
   geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = "Taxonomic Group",
-       fill= "Trophic Guild")
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = "Taxonomic Group",
+    fill= "Trophic Guild"
+  )
 ```
 
 We can also scale all bars to a percentage (or proportion).
 ```{r}
-homerange %>% 
-  ggplot(aes(x = taxon, fill = trophic.guild))+
-  geom_bar(position = position_fill())+ 
-  scale_y_continuous(labels = scales::percent)+
+homerange %>%
+  ggplot(aes(x = taxon, fill = trophic.guild)) +
+  geom_bar(position = position_fill()) +
+  scale_y_continuous(labels = scales::percent) +
   coord_flip()
 ```
 
@@ -132,7 +143,6 @@ For this practice, let's use the [palmerpenguins](https://allisonhorst.github.io
 
 1. Make a bar plot that shows counts of individuals by island. Fill by species, and try both a stacked bar plot and `position="dodge"`.
 ```{r}
-
 ```
 
 ```{r}

@@ -17,18 +17,29 @@ library("jpeg")
 1. Please load the homerange data `Tamburelloetal_HomeRangeDatabase.csv`
 
 ```{r}
+library(tidyverse)
 homerange <- read.csv("data/Tamburelloetal_HomeRangeDatabase.csv")
 ```
 
 2. Show the min, mean, and max log10.mass by taxonomic class in the dataset.
 
 ```{r}
-summary(homerange$log10.mass)
+print(
+    tmp <- homerange %>% 
+        group_by(class) %>% 
+        summarise(
+            min = min(log10.mass), 
+            mean = mean(log10.mass), 
+            max = max(log10.mass)
+        )
+)
 ```
 
 3. Make a plot that best summarizes this output.
 
 ```{r}
 library(tidyverse)
-ggplot(homerange, aes(x = taxonomic.class, y = log10.mass)) + geom_boxplot()
+homerange %>%
+    ggplot(aes(x = class, y = log10.mass)) +
+    geom_boxplot()
 ```
