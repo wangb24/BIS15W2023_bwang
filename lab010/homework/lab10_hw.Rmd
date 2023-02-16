@@ -1,11 +1,12 @@
 ---
 title: "Lab 10 Homework"
-author: "Please Add Your Name Here"
+author: "Bode W"
 date: "`r Sys.Date()`"
 output:
   html_document:
     theme: spacelab
     toc: no
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -28,28 +29,172 @@ library(naniar)
 ## Desert Ecology
 For this assignment, we are going to use a modified data set on [desert ecology](http://esapubs.org/archive/ecol/E090/118/). The data are from: S. K. Morgan Ernest, Thomas J. Valone, and James H. Brown. 2009. Long-term monitoring and experimental manipulation of a Chihuahuan Desert ecosystem near Portal, Arizona, USA. Ecology 90:1708.
 ```{r}
-deserts <- read_csv(here("lab10", "data", "surveys_complete.csv"))
+deserts <- read_csv(here("lab010", "data", "surveys_complete.csv"))
 ```
 
-1. Use the function(s) of your choice to get an idea of its structure, including how NA's are treated. Are the data tidy?  
+### 1. Use the function(s) of your choice to get an idea of its structure, including how NA's are treated. Are the data tidy?  
 
-2. How many genera and species are represented in the data? What are the total number of observations? Which species is most/ least frequently sampled in the study?
+```{r}
+head(deserts)
+# the data is tidy, because each variable is in a column
+# and each observation is in a row
+```
 
-3. What is the proportion of taxa included in this study? Show a table and plot that reflects this count.
+```{r}
+glimpse(deserts)
+```
 
-4. For the taxa included in the study, use the fill option to show the proportion of individuals sampled by `plot_type.`
+```{r}
+naniar::miss_var_summary(deserts)
+```
 
-5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
+### 2. How many genera and species are represented in the data? What are the total number of observations? Which species is most/ least frequently sampled in the study?
 
-6. Add another layer to your answer from #4 using `geom_point` to get an idea of how many measurements were taken for each species.
+```{r}
+deserts %>%
+  count(genus, species) %>%
+  slice_min(n, n = 1)
+```
 
-7. [Dipodomys merriami](https://en.wikipedia.org/wiki/Merriam's_kangaroo_rat) is the most frequently sampled animal in the study. How have the number of observations of this species changed over the years included in the study?
+```{r}
+deserts %>%
+  count(genus, species) %>%
+  slice_max(n, n = 1)
+```
 
-8. What is the relationship between `weight` and `hindfoot` length? Consider whether or not over plotting is an issue.
+### 3. What is the proportion of taxa included in this study? Show a table and plot that reflects this count.
 
-9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
+```{r}
+print(
+  tmp <- deserts %>%
+    count(taxa) %>%
+    mutate(prop = n / sum(n))
+)
+```
 
-10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
+```{r}
+ggplot(tmp, aes(x = taxa, y = prop)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Taxa", y = "Count") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### 4. For the taxa included in the study, use the fill option to show the proportion of individuals sampled by `plot_type.`
+
+```{r}
+tmp <- deserts %>%
+  count(taxa, plot_type) %>%
+  group_by(taxa) %>%
+  mutate(prop = n / sum(n))
+tmp
+```
+
+```{r}
+ggplot(tmp, aes(x = taxa, y = prop, fill = plot_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Taxa", y = "Count") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### 5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
+
+```{r}
+deserts %>%
+  drop_na(weight) %>%
+  ggplot(aes(x = species, y = weight)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### 6. Add another layer to your answer from #5 using `geom_point` to get an idea of how many measurements were taken for each species.
+
+```{r}
+deserts %>%
+  drop_na(weight) %>%
+  ggplot(aes(x = species, y = weight)) +
+  geom_jitter(color = "pink", alpha = 0.2) +
+  geom_boxplot(alpha = 0.35) +
+  scale_y_log10() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### 7. [Dipodomys merriami](https://en.wikipedia.org/wiki/Merriam's_kangaroo_rat) is the most frequently sampled animal in the study. How have the number of observations of this species changed over the years included in the study?
+
+```{r}
+deserts %>%
+  filter(species == "merriami") %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col() +
+  labs(x = "Year", y = "Count")
+```
+
+### 8. What is the relationship between `weight` and `hindfoot` length? Consider whether or not over plotting is an issue.
+
+```{r}
+deserts %>%
+  drop_na(weight, hindfoot_length) %>%
+  ggplot(aes(x = hindfoot_length, y = weight)) +
+  geom_point(alpha = 0.35) +
+  scale_y_log10()
+```
+
+### 9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
+
+```{r}
+tmp <- deserts %>%
+  drop_na(weight, hindfoot_length) %>%
+  group_by(species) %>%
+  summarize(mean_weight = mean(weight)) %>%
+  slice_max(mean_weight, n = 2)
+tmp
+tmp$species
+tmp <- deserts %>%
+  select(species, weight, hindfoot_length, sex) %>%
+  filter(species %in% tmp$species) %>%
+  drop_na(weight, hindfoot_length, sex) %>%
+  mutate(ratio = weight / hindfoot_length)
+tmp
+```
+
+```{r}
+ggplot(tmp, aes(x = species, y = ratio, fill = sex)) +
+  geom_boxplot(alpha = 0.35) +
+  scale_y_log10() +
+  labs(x = "Species", y = "Ratio") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### 10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
+
+```{r}
+# Number of taxa each year.
+deserts %>%
+  select(year, taxa) %>%
+  drop_na(year, taxa) %>%
+  group_by(year) %>%
+  count(taxa) %>%
+  ggplot(aes(x = year, y = n, fill = taxa)) +
+  geom_col() +
+  scale_y_log10() +
+  labs(x = "Year", y = "Count") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
