@@ -16,6 +16,44 @@ library("jpeg")
 ## Warm-up
 For this warm-up, please use the `heartrate` data. Be sure to label your plots!
 
+```{r}
+library(tidyverse)
+heartrate <- readr::read_csv("data/heartrate.csv")
+heartrate
+```
+
 1. Make a plot that compares the heartrate of patients for drug a.
 
+```{r}
+heartrate %>%
+    ggplot(aes(x = patient, y = a, fill = patient)) +
+    geom_col() +
+    labs(x = "Patient", y = "Heartrate")
+```
+
+
+```{r}
+heartrate %>%
+    pivot_longer(
+        cols = a:d,
+        names_to = "drug",
+        values_to = "heartrate"
+    ) %>%
+    ggplot(aes(x = patient, y = heartrate, fill = drug)) +
+    geom_col(position = "dodge") +
+    labs(x = "Patient", y = "Heartrate")
+```
+
 2. Make a plot that compares heartrate (as a range) for each drug.
+
+```{r}
+heartrate %>%
+    pivot_longer(
+        cols = a:d,
+        names_to = "drug",
+        values_to = "heartrate"
+    ) %>%
+    ggplot(aes(x = drug, y = heartrate)) +
+    geom_boxplot(alpha = 0.3) +
+    labs(x = "Drug", y = "Heartrate")
+```

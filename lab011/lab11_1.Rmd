@@ -1,10 +1,6 @@
 ---
 title: "Data Visualization: `ggplot` part 3"
 output:
-  html_document:
-    theme: spacelab
-    toc: yes
-    toc_float: yes
   pdf_document:
     toc: yes
 ---
@@ -30,9 +26,9 @@ Please make sure that you have 1-2 data sets to share with your group member dur
 ## Install `RColorBrewer`, `paletteer`, and `ggthemes`
 `RColorBrewer` and `paletteer` are helpful in selecting palettes of color that work with your data. Please install these now, we will work with them in part 2 of today's lab.
 ```{r, eval=FALSE, echo=TRUE}
-#install.packages("RColorBrewer")
-#install.packages("paletteer")
-#install.packages("ggthemes")
+# install.packages("RColorBrewer")
+# install.packages("paletteer")
+# install.packages("ggthemes")
 ```
 
 ## Load the libraries
@@ -45,7 +41,7 @@ library(here)
 ```
 
 ```{r}
-options(scipen=999) #cancels the use of scientific notation for the session
+options(scipen = 999) #cancels the use of scientific notation for the session
 ```
 
 ## Data
@@ -58,23 +54,27 @@ deserts <- read_csv("data/surveys_complete.csv")
 
 [Homerange](http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1). The data are from: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling of animal space use. The American Naturalist 186(2):196-211. http://dx.doi.org/10.1086/682070.  
 ```{r message=FALSE, warning=FALSE}
-homerange <- read_csv(here("lab10", "data", "Tamburelloetal_HomeRangeDatabase.csv"), na = c("", "NA", "\\"))
+homerange <- read_csv(here("lab011", "data", "Tamburelloetal_HomeRangeDatabase.csv"), na = c("", "NA", "\\"))
 ```
 
 ## Review
 1. Use the `homerange` data to make a boxplot that shows the range of `log10.mass` by taxonomic class.
 ```{r}
-
+plt <- homerange %>%
+  ggplot(aes(x = class, y = log10.mass))
+plt + geom_boxplot()
 ```
 
 2. Now, add a layer to this plot that fills color for each box by taxonomic class
 ```{r}
-
+plt +
+  geom_boxplot(aes(fill = class), alpha = 0.5)
 ```
 
 3. Within each taxonomic class, there are multiple taxa. Show a count of each of these taxa.
 ```{r}
-
+homerange %>%
+  count(taxon)
 ```
 
 ## Using `group`
@@ -102,18 +102,18 @@ deserts %>%
 ```
 
 ```{r}
-deserts2 <- deserts %>% mutate(year=as_factor(year))
+deserts2 <- deserts %>% mutate(year = as_factor(year))
 ```
 
 ```{r}
-deserts2 %>% 
-  filter(species_id=="DM" | species_id=="DS") %>% 
-  group_by(year, species_id) %>% 
-  summarise(n=n(), .groups='keep') %>% 
-  ggplot(aes(x=year, y=n, group=species_id, color=species_id))+
-  geom_line()+
-  geom_point(shape=5)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+deserts2 %>%
+  filter(species_id == "DM" | species_id == "DS") %>%
+  group_by(year, species_id) %>%
+  summarise(n = n(), .groups = "keep") %>%
+  ggplot(aes(x = year, y = n, group = species_id, color = species_id)) +
+  geom_line() +
+  geom_point(shape = 5) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
   labs(title = "Number of samples for species DM & DS",
        x = "Year",
        fill = "n")
@@ -124,15 +124,15 @@ Histograms are frequently used by biologists; they show the distribution of cont
 
 What does the distribution of body mass look like in the `homerange` data?
 ```{r}
-homerange %>% 
+homerange %>%
   ggplot(aes(x = log10.mass)) +
-  geom_histogram(alpha = 0.4, color = "black", fill = "deepskyblue4", bins=40)+
+  geom_histogram(alpha = 0.4, color = "black", fill = "deepskyblue4", bins = 40) +
   labs(title = "Distribution of Body Mass")
 ```
 
 Let's play with the colors. This shows all 657 of R's built-in colors. Notice that `color` and `fill` do different things!
 ```{r}
-grDevices::colors()
+# grDevices::colors()
 ```
 
 ## Density plots  
@@ -146,27 +146,41 @@ homerange %>%
 
 I like to see both the histogram and the density curve so I often plot them together. Note that I assign the density plot a different color.
 ```{r message=FALSE}
-homerange %>% 
-  ggplot(aes(x=log10.mass)) +
-  geom_histogram(aes(y = ..density..), fill = "deepskyblue4", alpha = 0.4, color = "black")+
-  geom_density(color = "red")+
+homerange %>%
+  ggplot(aes(x = log10.mass)) +
+  geom_histogram(aes(y = after_stat(density)), fill = "deepskyblue4", alpha = 0.4, color = "black") +
+  geom_density(color = "red") +
   labs(title = "Distribution of Body Mass")
 ```
 
 ## Practice
 1. Make a histogram of `log10.hra`. Make sure to add a title.
 ```{r}
-
+plt <- homerange %>%
+  ggplot(aes(x = log10.hra)) 
+plt +
+  geom_histogram(alpha = 0.4, color = "#323232", fill = "#34ccff") +
+  labs(title = "Distribution of Home Range Area")
 ```
 
 2. Now plot the same variable using `geom_density()`.
 ```{r}
-
+plt +
+  geom_density(color = "#323232", fill = "#34ccff", alpha = 0.4) +
+  labs(title = "Distribution of Home Range Area")
 ```
 
 3. Combine them both!
 ```{r}
-
+plt +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    color = "#323232",
+    fill = "#34ccff",
+    alpha = 0.4
+  ) +
+  geom_density(color = "#fc7c91") +
+  labs(title = "Distribution of Home Range Area")
 ```
 
 ## Create Categories with mutate and case_when()
@@ -220,14 +234,47 @@ quartiles <- quantcut(homerange$log10.hra)
 table(quartiles)
 ```
 
+```{r}
+homerange_range <- homerange %>% 
+  mutate(range_category = case_when(
+    log10.hra <= 3.65 ~ "very small",
+    log10.hra > 3.65 & log10.hra <= 4.59 ~ "small",
+    log10.hra > 4.59 & log10.hra <= 6.02 ~ "medium",
+    log10.hra > 6.02 ~ "large")
+  )
+```
+
+
 2. How many and which taxonomic classes are represented in each of the `range_category` classes?
 ```{r}
+homerange_range %>% 
+  group_by(range_category) %>% 
+  summarise(n = n(),
+    taxa = paste(unique(taxon), collapse = ", ")
+  )
+```
 
+```{r}
+homerange_range %>%
+  ggplot(aes(x = range_category, fill = class)) +
+  geom_bar(position = "dodge", alpha = .35) +
+  labs(
+    title = "Observations by Taxon and Range Category in Homerange Data",
+    x = "Range Category",
+    fill = "Taxon"
+  )
 ```
 
 3. Isolate the small `range_category` and plot the range of `log10.mass` by taxonomic class.
 ```{r}
-
+homerange_range %>%
+  filter(range_category == "small") %>%
+  ggplot(aes(x = class, y = log10.mass, color = class)) +
+  geom_boxplot(alpha = .35) +
+  labs(title = "Small Home Range Animals",
+    x = "Taxon",
+    y = "Log10 Body Mass"
+  )
 ```
 
 ## That's it, let's take a break!  
