@@ -228,7 +228,21 @@ gapminder %>%
   coord_flip()
 ```
 
-<!-- **10. Make one plot of your choice that uses faceting!** -->
+**10. Make one plot of your choice that uses faceting!**
+
+```{r}
+gapminder %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, shape = continent)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    title = "Life Expectancy by GDP",
+    x = "GDP per Capita",
+    y = "Life Expectancy"
+  ) +
+  facet_wrap(~year)
+```
 
 
 

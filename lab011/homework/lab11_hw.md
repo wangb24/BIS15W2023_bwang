@@ -1,7 +1,7 @@
 ---
 title: "Lab 11 Homework"
 author: "Bode W"
-date: "2023-02-20"
+date: "2023-02-21"
 output:
   html_document:
     theme: spacelab
@@ -307,7 +307,24 @@ gapminder %>%
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
-<!-- **10. Make one plot of your choice that uses faceting!** -->
+**10. Make one plot of your choice that uses faceting!**
+
+
+```r
+gapminder %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, shape = continent)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    title = "Life Expectancy by GDP",
+    x = "GDP per Capita",
+    y = "Life Expectancy"
+  ) +
+  facet_wrap(~year)
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 
 
