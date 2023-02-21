@@ -35,49 +35,55 @@ library(here)
 ```
 
 ```{r}
-options(scipen=999) #cancels the use of scientific notation for the session
+options(scipen = 999) # cancels the use of scientific notation for the session
 ```
 
 ## Data
 For this tutorial, we will use:  
 [Homerange](http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1). The data are from: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling of animal space use. The American Naturalist 186(2):196-211. http://dx.doi.org/10.1086/682070.  
 ```{r message=FALSE, warning=FALSE}
-homerange <- read_csv(here("lab11", "data", "Tamburelloetal_HomeRangeDatabase.csv"))
+homerange <- read_csv(here("lab011", "data", "Tamburelloetal_HomeRangeDatabase.csv"))
 ```
 
 ## ggplot themes
 There are many options to change the theme of your plots. Have a look [here](https://www.datanovia.com/en/blog/ggplot-themes-gallery/) for some excellent examples. I am going to build a basic plot here and then use it throughout to illustrate the themes.
 ```{r}
-p <- homerange %>% 
-  ggplot(aes(x=taxon, fill=trophic.guild))+
-  geom_bar(na.rm=T, position="dodge")
+p <- homerange %>%
+  ggplot(aes(x = taxon, fill = trophic.guild)) +
+  geom_bar(na.rm = T, position = "dodge")
 p
 ```
 
 ```{r}
-p+theme_classic()+
-  theme(axis.text.x = element_text(angle = 60, hjust=1))+
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = NULL,
-       y= "n",
-       fill= "Trophic Guild")
+p + theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = NULL,
+    y = "n",
+    fill = "Trophic Guild"
+  )
 ```
 
 ## Legends
 There are lots of options to manipulate legends. Have a look [here](http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software).
 ```{r}
-p+theme_linedraw()+
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 60, hjust=1))+
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = NULL,
-       y= "n",
-       fill= "Trophic Guild")
+p + theme_linedraw() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 60, hjust = 1)
+  ) +
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = NULL,
+    y = "n",
+    fill = "Trophic Guild"
+  )
 ```
 
 ## Not enough? [ggthemes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/)
 ```{r}
-#install.packages("ggthemes")
+# install.packages("ggthemes")
 library(ggthemes)
 ```
 
@@ -87,13 +93,17 @@ ls("package:ggthemes")[grepl("theme_", ls("package:ggthemes"))]
 ```
 
 ```{r}
-p+ theme_igray()+
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 60, hjust=1))+
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = NULL,
-       y= "n",
-       fill= "Trophic Guild")
+p + theme_igray() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 60, hjust = 1)
+  ) +
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = NULL,
+    y = "n",
+    fill = "Trophic Guild"
+  )
 ```
 
 ## RColorBrewer
@@ -101,12 +111,12 @@ The default colors used by ggplot are often uninspiring. They don't make plots p
 
 Access the help for `RColorBrewer`.
 ```{r}
-?RColorBrewer
+# ?RColorBrewer
 ```
 
 The thing to notice is that there are three different palettes: 1) sequential, 2) diverging, and 3) qualitative. Within each of these there are several selections. You can bring up the colors by using `display.brewer.pal()`. Specify the number of colors that you want and the palette name.
 ```{r}
-display.brewer.pal(4,"GnBu")
+display.brewer.pal(4, "Set2")
 ```
 
 The [R Color Brewer](http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3) website is very helpful for getting an idea of the color palettes. To make things easy, use these two guidelines:
@@ -116,19 +126,24 @@ The [R Color Brewer](http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3) w
 
 Here I chose the `Paired` palette. Take a moment and experiment with other options.
 ```{r}
-p+scale_fill_brewer(palette = "BuPu")+
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 60, hjust=1))+
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = NULL,
-       y= "n",
-       fill= "Trophic Guild")
+p + scale_fill_brewer(palette = "Set2") +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 60, hjust = 1)
+  ) +
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = NULL,
+    y = "n",
+    fill = "Trophic Guild"
+  )
 ```
 
 ## Manually Setting Colors
 You can also use `paleteer` to build a custom palette for consistency. To access the `paleteer` collection, I add it to a new object.
 ```{r}
 colors <- paletteer::palettes_d_names
+# colors
 ```
 
 Now we can display the palettes. Assign the palette to `my_palette` and then build this base R bar plot. There are a lot of options; `paleteer` is a collection of popular palettes. I really like the [`ggsci` package] (https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html)
@@ -137,24 +152,28 @@ my_palette <- paletteer_d("ggprism::flames")
 ```
 
 ```{r}
-barplot(rep(1,14), axes=FALSE, col=my_palette)
+barplot(rep(1, 14), axes = FALSE, col = my_palette)
 ```
 
 Now we just identify `my_palette` as part of `scale_fill_manual()`
 ```{r}
-p+scale_fill_manual(values=my_palette)+
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 60, hjust=1))+
-  labs(title = "Observations by Taxon in Homerange Data",
-       x = NULL,
-       y= "n",
-       fill= "Trophic Guild")
+p + scale_fill_manual(values = my_palette) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 60, hjust = 1)
+  ) +
+  labs(
+    title = "Observations by Taxon in Homerange Data",
+    x = NULL,
+    y = "n",
+    fill = "Trophic Guild"
+  )
 ```
 
 ## Adjusting the x and y limits
 There are many options for adjusting the x and y axes. For details, look over examples in the [R Cookbook](http://www.cookbook-r.com/). To adjust limits, we can use the `xlim` and `ylim` commands. When you do this, any data outside the specified ranges are not plotted.
 ```{r}
-homerange %>% 
+homerange %>%
   ggplot(aes(x = log10.mass, y = log10.hra, color = locomotion)) +
   geom_point() +
   xlim(0, 4) +
@@ -164,12 +183,21 @@ homerange %>%
 ## Practice
 1. Revisit the relationship between mass and homerange using a scatterplot, but color the points by taxonomic class using a custom color theme.
 ```{r}
-
+plt <- homerange %>%
+  ggplot(aes(x = log10.mass, y = log10.hra, color = taxon)) +
+  scale_color_paletteer_d("rcartocolor::Prism") +
+  geom_point(alpha = 0.55)
+plt
 ```
 
 2. Build bar plots that show the representation by taxonomic class with carnivores and herbivores. Try using a color theme that matches your scatterplot to keep everything consistent.
 ```{r}
-
+plt <- homerange %>%
+  ggplot(aes(x = trophic.guild, fill = class)) +
+  scale_fill_paletteer_d("rcartocolor::Prism") +
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 44, hjust = 1))
+plt
 ```
 
 ## Faceting
@@ -179,10 +207,11 @@ Let's use some new data on migratory birds as an example. These data are from: [
 
 Here we import the data and clean the names. Because these data have a header, the skip function helps with a clean import.  
 ```{r}
-ecosphere <- read_csv("data/ecs21351-sup-0003-SupplementS1.csv", skip=2, col_names = T) %>% 
-  clean_names() %>% 
-  separate(scientific_name, into = c("genus", "species"), sep=" ") %>% 
+ecosphere <- read_csv("./data/ecs21351-sup-0003-SupplementS1.csv", skip = 2, col_names = T) %>%
+  clean_names() %>%
+  separate(scientific_name, into = c("genus", "species"), sep = " ") %>%
   na.omit() # remove NA's for now
+ecosphere %>% head()
 ```
 
 ```{r}
@@ -191,88 +220,109 @@ names(ecosphere)
 
 What if we were interested in a comparison of diet and mass, i.e. how does the range of masses compare by different diet types?  
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=diet))+ 
-  geom_boxplot(alpha=0.4)
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4)
 ```
 
 This is an interesting plot, but we might use a grouping function to explore the comparison to include migratory strategy.  
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
-  geom_boxplot(alpha=0.4)
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4)
 ```
 
 The problem is that the plot becomes very busy. It is hard to interpret with each migratory strategy mapped. We could build separate plots for each migratory strategy, but this also makes it harder to compare. Instead, we can use faceting to make a multi-panel plot.  
 
 `facet_wrap()` makes a ribbon of panels, but you can control how you want them arranged.  
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
-  geom_boxplot(alpha=0.4) + 
-  facet_wrap(~migratory_strategy, ncol=4)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Mass by Diet and Migratory Strategy",
-       x = NULL,
-       y = "Log 10 Mass",
-       fill = "Migratory Strategy")
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4) +
+  facet_wrap(~migratory_strategy, ncol = 4) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(
+    title = "Mass by Diet and Migratory Strategy",
+    x = NULL,
+    y = "Log 10 Mass",
+    fill = "Migratory Strategy"
+  )
 ```
 
 `facet_grid()` allows control over the faceted variable; it can be arranged in rows or columns.  
 rows~columns
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
-  geom_boxplot(alpha=0.4)+ 
-  facet_grid(migratory_strategy~.)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Mass by Diet and Migratory Strategy",
-       x = NULL,
-       y = "Log 10 Mass",
-       fill = "Migratory Strategy")
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4) +
+  facet_grid(migratory_strategy ~ .) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(
+    title = "Mass by Diet and Migratory Strategy",
+    x = NULL,
+    y = "Log 10 Mass",
+    fill = "Migratory Strategy"
+  )
 ```
 
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
-  geom_boxplot(alpha=0.4)+ 
-  facet_grid(.~migratory_strategy)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Mass by Diet and Migratory Strategy",
-       x = NULL,
-       y = "Log 10 Mass",
-       fill = "Migratory Strategy")
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4) +
+  facet_grid(. ~ migratory_strategy) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(
+    title = "Mass by Diet and Migratory Strategy",
+    x = NULL,
+    y = "Log 10 Mass",
+    fill = "Migratory Strategy"
+  )
 ```
 
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
-  geom_boxplot(alpha=0.4)+ 
-  facet_grid(migratory_strategy~.)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Mass by Diet and Migratory Strategy",
-       x = NULL,
-       y = "Log 10 Mass",
-       fill = "Migratory Strategy")
+ecosphere %>%
+  ggplot(aes(x = diet, y = log10_mass, fill = migratory_strategy)) +
+  geom_boxplot(alpha = 0.4) +
+  facet_grid(migratory_strategy ~ .) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(
+    title = "Mass by Diet and Migratory Strategy",
+    x = NULL,
+    y = "Log 10 Mass",
+    fill = "Migratory Strategy"
+  )
 ```
 
 `facet_grid()` will also allow the comparison of two categorical variables, just remember a~b where a is rows and b is columns.  
 ```{r}
-ecosphere %>% 
-  ggplot(aes(x=log10_mass))+
-  geom_density()+
-  facet_grid(diet~habitat, scales = "free_y")
+ecosphere %>%
+  ggplot(aes(x = log10_mass)) +
+  geom_density() +
+  facet_grid(diet ~ habitat, scales = "free_y")
 ```
 
 ## Practice
-1. Build a faceted plot that shows a distribution of life expectancy by habitat type.
+1. Build a faceted plot that shows a distribution of ~~life expectancy~~ log10.mass by habitat type.
 ```{r}
+ecosphere %>%
+  ggplot(aes(x = log10_mass, color = habitat, fill = habitat)) +
+  geom_density(alpha = 0.3) +
+  facet_grid(. ~ habitat)
+```
 
+```{r}
+ecosphere %>%
+  ggplot(aes(x = life_expectancy, color = habitat, fill = habitat)) +
+  geom_histogram(alpha = 0.3, stat = "count") +
+  facet_grid(. ~ habitat)
 ```
 
 2. Try the same plot as #1 above, but include life_expectancy~habitat.
 ```{r}
-
+ecosphere %>%
+  ggplot(aes(x = log10_mass, color = habitat, fill = habitat)) +
+  geom_density(alpha = 0.3) +
+  facet_grid(habitat ~ life_expectancy)
 ```
 
 ## That's it, let's take a break!   
