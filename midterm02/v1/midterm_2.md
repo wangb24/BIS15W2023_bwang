@@ -255,7 +255,6 @@ dat <- surgery %>%
 
 ## 5 procedures with highest risk of 30-day mortality
 dat %>%
-  select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>%
   slice_max(ccsmort30rate, n = 5)
 ```
 
@@ -274,53 +273,19 @@ dat %>%
 ```r
 ## 5 procedures with highest risk of complication
 dat %>%
-  select(ahrq_ccs, ccscomplicationrate, ccsmort30rate) %>%
   slice_max(ccscomplicationrate, n = 5)
 ```
 
 ```
 ## # A tibble: 5 × 3
-##   ahrq_ccs                         ccscomplicationrate ccsmort30rate
-##   <chr>                                          <dbl>         <dbl>
-## 1 Small bowel resection                          0.466       0.0129 
-## 2 Colorectal resection                           0.312       0.0167 
-## 3 Nephrectomy; partial or complete               0.197       0.00276
-## 4 Gastrectomy; partial and total                 0.190       0.0127 
-## 5 Spinal fusion                                  0.183       0.00742
+##   ahrq_ccs                         ccsmort30rate ccscomplicationrate
+##   <chr>                                    <dbl>               <dbl>
+## 1 Small bowel resection                  0.0129                0.466
+## 2 Colorectal resection                   0.0167                0.312
+## 3 Nephrectomy; partial or complete       0.00276               0.197
+## 4 Gastrectomy; partial and total         0.0127                0.190
+## 5 Spinal fusion                          0.00742               0.183
 ```
-
-
-```r
-top_5_mortality <- dat %>%
-  slice_max(ccsmort30rate, n = 5) %>%
-  select(ahrq_ccs, ccsmort30rate) %>%
-  rename(
-    rate = ccsmort30rate
-  ) %>%
-  mutate(
-    type = "mortality"
-  )
-top_5_complication <- dat %>%
-  slice_max(ccscomplicationrate, n = 5) %>%
-  select(ahrq_ccs, ccscomplicationrate) %>%
-  rename(
-    rate = ccscomplicationrate
-  ) %>%
-  mutate(
-    type = "complication"
-  )
-rbind(top_5_mortality, top_5_complication) %>%
-  ggplot(aes(x = ahrq_ccs, y = rate, fill = type)) +
-  geom_col(alpha = 0.6, position = "dodge") +
-  labs(
-    title = "Top 5 procedures by mortality and complication",
-    x = "Procedure",
-    y = "Rate"
-  ) +
-  coord_flip()
-```
-
-![](midterm_2_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
 
@@ -350,22 +315,21 @@ surgery %>%
   coord_flip()
 ```
 
-![](midterm_2_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](midterm_2_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 9.  (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 
 
 ```r
-list_of_months <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 dat <- surgery %>%
   mutate(mort30 = ifelse(mort30 == "Yes", TRUE, FALSE)) %>%
   mutate(mort30 = as.logical(mort30)) %>%
-  mutate(month = factor(month, levels = list_of_months)) %>%
+  mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
   group_by(month) %>%
   summarise(
-    `expected 30-day mortality` = mean(ccsmort30rate, na.rm = TRUE),
+    ccsmort30rate = mean(ccsmort30rate, na.rm = TRUE),
     ccscomplicationrate = mean(ccscomplicationrate, na.rm = TRUE),
-    `actual 30-day mortality` = sum(mort30) / n()
+    `30_day_mortality` = sum(mort30) / n()
   ) %>%
   arrange(month)
 dat
@@ -373,140 +337,53 @@ dat
 
 ```
 ## # A tibble: 12 × 4
-##    month `expected 30-day mortality` ccscomplicationrate actual 30-day mortali…¹
-##    <fct>                       <dbl>               <dbl>                   <dbl>
-##  1 Jan                       0.00429               0.134                 0.00712
-##  2 Feb                       0.00427               0.134                 0.00678
-##  3 Mar                       0.00421               0.131                 0.00445
-##  4 Apr                       0.00430               0.131                 0.00445
-##  5 May                       0.00436               0.132                 0.00377
-##  6 Jun                       0.00435               0.132                 0.00468
-##  7 Jul                       0.00432               0.134                 0.00516
-##  8 Aug                       0.00443               0.136                 0.00283
-##  9 Sep                       0.00435               0.135                 0.00499
-## 10 Oct                       0.00430               0.133                 0.00298
-## 11 Nov                       0.00433               0.134                 0.00197
-## 12 Dec                       0.00418               0.133                 0.00218
-## # … with abbreviated variable name ¹​`actual 30-day mortality`
+##    month ccsmort30rate ccscomplicationrate `30_day_mortality`
+##    <fct>         <dbl>               <dbl>              <dbl>
+##  1 Jan         0.00429               0.134            0.00712
+##  2 Feb         0.00427               0.134            0.00678
+##  3 Mar         0.00421               0.131            0.00445
+##  4 Apr         0.00430               0.131            0.00445
+##  5 May         0.00436               0.132            0.00377
+##  6 Jun         0.00435               0.132            0.00468
+##  7 Jul         0.00432               0.134            0.00516
+##  8 Aug         0.00443               0.136            0.00283
+##  9 Sep         0.00435               0.135            0.00499
+## 10 Oct         0.00430               0.133            0.00298
+## 11 Nov         0.00433               0.134            0.00197
+## 12 Dec         0.00418               0.133            0.00218
 ```
 
-*Mortality rate*
 
 ```r
 dat %>%
   select(-ccscomplicationrate) %>%
   pivot_longer(
-    cols = -month,
+    cols = c(ccsmort30rate, `30_day_mortality`),
     names_to = "variable",
     values_to = "value"
   ) %>%
   ggplot(
     aes(
-      x = month,
+      x = reorder(month, value),
       y = value,
       fill = variable
     )
   ) +
   geom_col(alpha = 0.4, position = "dodge") +
   labs(
-    title = "30-day mortality rate by month",
+    title = "30-day mortality and complications by month",
     x = "Month",
     y = "Rate"
   ) +
   coord_flip()
 ```
 
-![](midterm_2_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
-
-*Complication rate*
-
-```r
-dat %>%
-  select(month, ccscomplicationrate) %>%
-  ggplot(
-    aes(
-      x = month,
-      y = ccscomplicationrate
-    )
-  ) +
-  geom_col(alpha = 0.4) +
-  labs(
-    title = "30-day complication rate by month",
-    x = "Month",
-    y = "Rate"
-  ) +
-  coord_flip()
-```
-
-![](midterm_2_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
-
-*Combine*
-
-```r
-dat %>%
-  pivot_longer(
-    cols = -month,
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  ggplot(
-    aes(
-      x = reorder(month, desc(month)),
-      y = value,
-      fill = variable
-    )
-  ) +
-  geom_col(alpha = 0.4, position = "dodge") +
-  facet_wrap(~variable, scales = "free_x") +
-  labs(
-    title = "30-day mortality and complication rate by month",
-    x = "Month",
-    y = "Rate"
-  ) +
-  coord_flip()
-```
-
-![](midterm_2_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
-
-10.  (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
+![](midterm_2_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
 
 
-```r
-dat %>%
-  pivot_longer(
-    cols = -month,
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  ggplot(
-    aes(
-      x = month,
-      y = value,
-      fill = variable
-    )
-  ) +
-  geom_col(alpha = 0.4, position = "dodge") +
-  facet_wrap(~variable, scales = "free_y") +
-  labs(
-    title = "30-day mortality and complication rate by month",
-    x = "Month",
-    y = "Rate"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 65, hjust = 1)
-  )
-```
 
-![](midterm_2_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
-
+10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
 
 Please provide the names of the students you have worked with with during the exam:
-
-
-```
-##               name  github
-## 1 Bode Wang (self) wangb24
-## 2      Yuchen Shao YcS2025
-```
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.

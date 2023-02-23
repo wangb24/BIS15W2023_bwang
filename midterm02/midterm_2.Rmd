@@ -138,11 +138,43 @@ dat <- surgery %>%
 
 ## 5 procedures with highest risk of 30-day mortality
 dat %>%
+  select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>%
   slice_max(ccsmort30rate, n = 5)
 
 ## 5 procedures with highest risk of complication
 dat %>%
+  select(ahrq_ccs, ccscomplicationrate, ccsmort30rate) %>%
   slice_max(ccscomplicationrate, n = 5)
+```
+
+```{r}
+top_5_mortality <- dat %>%
+  slice_max(ccsmort30rate, n = 5) %>%
+  select(ahrq_ccs, ccsmort30rate) %>%
+  rename(
+    rate = ccsmort30rate
+  ) %>%
+  mutate(
+    type = "mortality"
+  )
+top_5_complication <- dat %>%
+  slice_max(ccscomplicationrate, n = 5) %>%
+  select(ahrq_ccs, ccscomplicationrate) %>%
+  rename(
+    rate = ccscomplicationrate
+  ) %>%
+  mutate(
+    type = "complication"
+  )
+rbind(top_5_mortality, top_5_complication) %>%
+  ggplot(aes(x = ahrq_ccs, y = rate, fill = type)) +
+  geom_col(alpha = 0.6, position = "dodge") +
+  labs(
+    title = "Top 5 procedures by mortality and complication",
+    x = "Procedure",
+    y = "Rate"
+  ) +
+  coord_flip()
 ```
 
 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
@@ -175,48 +207,126 @@ surgery %>%
 9.  (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 
 ```{r}
+list_of_months <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 dat <- surgery %>%
   mutate(mort30 = ifelse(mort30 == "Yes", TRUE, FALSE)) %>%
   mutate(mort30 = as.logical(mort30)) %>%
-  mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
+  mutate(month = factor(month, levels = list_of_months)) %>%
   group_by(month) %>%
   summarise(
-    ccsmort30rate = mean(ccsmort30rate, na.rm = TRUE),
+    `expected 30-day mortality` = mean(ccsmort30rate, na.rm = TRUE),
     ccscomplicationrate = mean(ccscomplicationrate, na.rm = TRUE),
-    `30_day_mortality` = sum(mort30) / n()
+    `actual 30-day mortality` = sum(mort30) / n()
   ) %>%
   arrange(month)
 dat
 ```
 
+*Mortality rate*
 ```{r}
 dat %>%
   select(-ccscomplicationrate) %>%
   pivot_longer(
-    cols = c(ccsmort30rate, `30_day_mortality`),
+    cols = -month,
     names_to = "variable",
     values_to = "value"
   ) %>%
   ggplot(
     aes(
-      x = reorder(month, value),
+      x = month,
       y = value,
       fill = variable
     )
   ) +
   geom_col(alpha = 0.4, position = "dodge") +
   labs(
-    title = "30-day mortality and complications by month",
+    title = "30-day mortality rate by month",
     x = "Month",
     y = "Rate"
   ) +
   coord_flip()
 ```
 
+*Complication rate*
+```{r}
+dat %>%
+  select(month, ccscomplicationrate) %>%
+  ggplot(
+    aes(
+      x = month,
+      y = ccscomplicationrate
+    )
+  ) +
+  geom_col(alpha = 0.4) +
+  labs(
+    title = "30-day complication rate by month",
+    x = "Month",
+    y = "Rate"
+  ) +
+  coord_flip()
+```
 
+*Combine*
+```{r}
+dat %>%
+  pivot_longer(
+    cols = -month,
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(
+    aes(
+      x = reorder(month, desc(month)),
+      y = value,
+      fill = variable
+    )
+  ) +
+  geom_col(alpha = 0.4, position = "dodge") +
+  facet_wrap(~variable, scales = "free_x") +
+  labs(
+    title = "30-day mortality and complication rate by month",
+    x = "Month",
+    y = "Rate"
+  ) +
+  coord_flip()
+```
 
-10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
+10.  (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
+
+```{r}
+dat %>%
+  pivot_longer(
+    cols = -month,
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(
+    aes(
+      x = month,
+      y = value,
+      fill = variable
+    )
+  ) +
+  geom_col(alpha = 0.4, position = "dodge") +
+  facet_wrap(~variable, scales = "free_y") +
+  labs(
+    title = "30-day mortality and complication rate by month",
+    x = "Month",
+    y = "Rate"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 65, hjust = 1)
+  )
+```
+
 
 Please provide the names of the students you have worked with with during the exam:
+
+```{r echo=FALSE}
+name <- c("Bode Wang (self)", "Yuchen Shao")
+github <- c("wangb24", "YcS2025")
+collab <- data.frame(name, github)
+collab
+```
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
